@@ -11,10 +11,11 @@
     center: [-32.95, -60.66],
     zoom: 11,
     markerCluster: {
-      spiderfyOnMaxZoom: false,
+      spiderfyOnMaxZoom: true,
       zoomToBoundsOnClick: true,
       showCoverageOnHover: false,
-      maxClusterRadius: 45
+      maxClusterRadius: 38,
+      disableClusteringAtZoom: 15
     },
     heat: {
       radius: 22,
@@ -61,21 +62,31 @@
     return value === null || value === undefined || value === "" ? "N/A" : value;
   }
 
-  function buildEventPopup(event) {
+  function cleanText(value) {
+    return valueOrNA(value).toString().replace(/_x000D_\\n/g, "<br>").replace(/\n/g, "<br>");
+  }
+
+  function buildEventPopup(event, displayInfo) {
+    var offsetNote = displayInfo && displayInfo.isJittered
+      ? '<div class="popup-source"><span class="popup-label">Map note:</span> marker slightly offset to separate overlapping events with identical coordinates.</div>'
+      : "";
+
     return [
       '<div class="popup-card">',
-      '  <div class="popup-title">' + valueOrNA(event.source_headline || event.description) + "</div>",
+      '  <div class="popup-title">' + cleanText(event.source_headline || event.description) + "</div>",
       '  <div class="popup-row"><span class="popup-label">Event ID:</span> ' + valueOrNA(event.id) + "</div>",
       '  <div class="popup-row"><span class="popup-label">RelID:</span> ' + valueOrNA(event.relid) + "</div>",
       '  <div class="popup-row"><span class="popup-label">Date:</span> ' + valueOrNA(event.date_start) + "</div>",
       '  <div class="popup-row"><span class="popup-label">Year:</span> ' + valueOrNA(event.year) + "</div>",
-      '  <div class="popup-row"><span class="popup-label">Location:</span> ' + valueOrNA(event.where_description) + "</div>",
+      '  <div class="popup-row"><span class="popup-label">Location:</span> ' + cleanText(event.where_description) + "</div>",
       '  <div class="popup-row"><span class="popup-label">Dyad:</span> ' + valueOrNA(event.dyad_name) + "</div>",
       '  <div class="popup-row"><span class="popup-label">Type of violence:</span> ' + valueOrNA(event.type) + "</div>",
       '  <div class="popup-row"><span class="popup-label">Fatalities:</span> ' + valueOrNA(event.fatalities) + "</div>",
       '  <div class="popup-row"><span class="popup-label">Civilian deaths:</span> ' + valueOrNA(event.deaths_civilians) + "</div>",
-      '  <div class="popup-source"><span class="popup-label">Source:</span> ' + valueOrNA(event.source_office) + "</div>",
-      '  <div class="popup-row"><span class="popup-label">Source headline:</span> ' + valueOrNA(event.source_headline) + "</div>",
+      '  <div class="popup-row"><span class="popup-label">Original coordinates:</span> ' + valueOrNA(event.lat) + ", " + valueOrNA(event.lng) + "</div>",
+      '  <div class="popup-source"><span class="popup-label">Source:</span> ' + cleanText(event.source_office) + "</div>",
+      '  <div class="popup-row"><span class="popup-label">Source headline:</span> ' + cleanText(event.source_headline) + "</div>",
+      offsetNote,
       "</div>"
     ].join("\n");
   }
@@ -87,7 +98,7 @@
     if (count > 5) return "#FC4E2A";
     if (count > 2) return "#FD8D3C";
     if (count > 0) return "#FEB24C";
-    return "#222";
+    return "#ffffff";
   }
 
   function pointInPolygon(point, polygon) {
@@ -102,9 +113,7 @@
       var yj = polygon[j][1];
 
       var intersects = (yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
-      if (intersects) {
-        inside = !inside;
-      }
+      if (intersects) inside = !inside;
     }
 
     return inside;
@@ -161,17 +170,65 @@
       var lng = Number(event.lng);
       var hasCoordinates = !Number.isNaN(lat) && lat !== 0 && !Number.isNaN(lng) && lng !== 0;
 
-      if (!hasCoordinates || !event.year) {
-        return false;
-      }
+      if (!hasCoordinates || !event.year) return false;
 
       return year === "all" || String(event.year) === String(year);
     });
   }
 
-  function renderMarkers(events) {
+  function coordinateKey(event) {
+    return Number(event.lat).toFixed(6) + "," + Number(event.lng).toFixed(6);
+  }
+
+  function buildDisplayPositions(events) {
+    var grouped = {};
+
     events.forEach(function (event) {
-      var marker = L.marker([Number(event.lat), Number(event.lng)]).bindPopup(buildEventPopup(event));
+      var key = coordinateKey(event);
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(event);
+    });
+
+    var displayItems = [];
+    var baseRadius = 0.00028;
+
+    Object.keys(grouped).forEach(function (key) {
+      var group = grouped[key];
+      var total = group.length;
+
+      group.forEach(function (event, index) {
+        var lat = Number(event.lat);
+        var lng = Number(event.lng);
+        var displayLat = lat;
+        var displayLng = lng;
+        var isJittered = total > 1;
+
+        if (isJittered) {
+          var ring = Math.floor(index / 12) + 1;
+          var positionInRing = index % 12;
+          var angle = (2 * Math.PI * positionInRing) / Math.min(total, 12);
+          var radius = baseRadius * ring;
+          displayLat = lat + Math.sin(angle) * radius;
+          displayLng = lng + Math.cos(angle) * radius;
+        }
+
+        displayItems.push({
+          event: event,
+          displayLat: displayLat,
+          displayLng: displayLng,
+          isJittered: isJittered
+        });
+      });
+    });
+
+    return displayItems;
+  }
+
+  function renderMarkers(events) {
+    var displayItems = buildDisplayPositions(events);
+
+    displayItems.forEach(function (item) {
+      var marker = L.marker([item.displayLat, item.displayLng]).bindPopup(buildEventPopup(item.event, item));
       markerClusterLayer.addLayer(marker);
     });
 
@@ -211,7 +268,10 @@
   }
 
   function renderDensity(events) {
-    if (!state.barriosGeoJSON) return;
+    if (!state.barriosGeoJSON) {
+      ui.counter.innerText = "Neighbourhood data not loaded";
+      return;
+    }
 
     var counts = calculateBarrioCounts(events);
 
@@ -221,9 +281,10 @@
 
         return {
           fillColor: getDensityColor(count),
-          weight: 1,
-          color: "#444",
-          fillOpacity: count > 0 ? 0.72 : 0.18
+          weight: count > 0 ? 1.4 : 0.8,
+          color: count > 0 ? "#7f0000" : "#555",
+          opacity: 0.9,
+          fillOpacity: count > 0 ? 0.68 : 0.12
         };
       },
       onEachFeature: function (feature, layer) {
@@ -232,18 +293,19 @@
 
         layer.bindPopup(
           '<div class="popup-card">' +
-            '<div class="popup-title">' +
-            name +
-            "</div>" +
-            '<div class="popup-row"><span class="popup-label">Events:</span> ' +
-            count +
-            "</div>" +
+            '<div class="popup-title">' + name + "</div>" +
+            '<div class="popup-row"><span class="popup-label">Events:</span> ' + count + "</div>" +
             "</div>"
         );
       }
     });
 
     map.addLayer(state.barriosLayer);
+
+    var bounds = state.barriosLayer.getBounds();
+    if (bounds.isValid()) {
+      map.fitBounds(bounds, { padding: [25, 25], maxZoom: 12 });
+    }
   }
 
   function updateCounter(count) {
