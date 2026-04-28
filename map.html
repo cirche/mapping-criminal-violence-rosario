@@ -121,26 +121,35 @@
 
     var markers = [];
 
+    function getColor(type) {
+      if (type === "homicide") return "#c1121f";       // rosso
+      if (type === "violence") return "#f4a261";       // arancione
+      return "#457b9d";                                // blu
+    }
+
     function loadMarkers(data, year) {
       markers.forEach(m => map.removeLayer(m));
       markers = [];
 
       data.forEach(event => {
         if (year === "all" || event.year === year) {
+
           var size = 5 + (event.fatalities * 3);
+          var color = getColor(event.type);
 
           var circle = L.circleMarker([event.lat, event.lng], {
             radius: size,
-            color: "#c1121f",
-            fillColor: "#c1121f",
-            fillOpacity: 0.6,
+            color: color,
+            fillColor: color,
+            fillOpacity: 0.7,
             weight: 1
           })
           .addTo(map)
           .bindPopup(
-            event.description + "<br>" +
+            "<b>" + event.description + "</b><br>" +
             "Year: " + event.year + "<br>" +
-            "Fatalities: " + event.fatalities
+            "Fatalities: " + event.fatalities + "<br>" +
+            "Type: " + event.type
           );
 
           markers.push(circle);
