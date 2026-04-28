@@ -68,6 +68,14 @@
       margin-top: 30px;
       border: 1px solid #333;
     }
+
+    select {
+      margin-top: 20px;
+      padding: 8px;
+      background: #111;
+      color: white;
+      border: 1px solid #333;
+    }
   </style>
 </head>
 
@@ -86,10 +94,18 @@
   <main class="content">
     <h1>Interactive Map</h1>
     <p>
-      Explore georeferenced events of criminal violence in Rosario. 
-      This section will later include filters by year, actor, event type, 
-      location, and fatalities.
+      Explore georeferenced events of criminal violence in Rosario.
+      Use the filter to visualise events by year.
     </p>
+
+    <label for="yearFilter">Select Year:</label>
+    <select id="yearFilter">
+      <option value="all">All Years</option>
+      <option value="2025">2025</option>
+      <option value="2024">2024</option>
+      <option value="2023">2023</option>
+      <option value="2022">2022</option>
+    </select>
 
     <div id="map"></div>
   </main>
@@ -103,11 +119,35 @@
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    L.marker([-32.95, -60.66]).addTo(map)
-      .bindPopup("Sample event in Rosario");
+    // DEMO DATA (simula il tuo dataset UCDP)
+    var events = [
+      { coords: [-32.95, -60.66], year: "2025", text: "Event 2025" },
+      { coords: [-32.97, -60.64], year: "2024", text: "Event 2024" },
+      { coords: [-32.96, -60.67], year: "2023", text: "Event 2023" },
+      { coords: [-32.94, -60.65], year: "2022", text: "Event 2022" }
+    ];
 
-    L.marker([-32.97, -60.64]).addTo(map)
-      .bindPopup("Another sample event");
+    var markers = [];
+
+    function loadMarkers(year) {
+      markers.forEach(m => map.removeLayer(m));
+      markers = [];
+
+      events.forEach(event => {
+        if (year === "all" || event.year === year) {
+          var marker = L.marker(event.coords)
+            .addTo(map)
+            .bindPopup(event.text + " (" + event.year + ")");
+          markers.push(marker);
+        }
+      });
+    }
+
+    loadMarkers("all");
+
+    document.getElementById("yearFilter").addEventListener("change", function() {
+      loadMarkers(this.value);
+    });
   </script>
 </body>
 </html>
