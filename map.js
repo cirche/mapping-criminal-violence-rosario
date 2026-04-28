@@ -65,15 +65,17 @@
     return [
       '<div class="popup-card">',
       '  <div class="popup-title">' + valueOrNA(event.source_headline || event.description) + "</div>",
-      '  <div class="popup-row"><span class="popup-label">Event ID:</span> ' + valueOrNA(event.event_id) + "</div>",
-      '  <div class="popup-row"><span class="popup-label">Date:</span> ' + valueOrNA(event.date) + "</div>",
+      '  <div class="popup-row"><span class="popup-label">Event ID:</span> ' + valueOrNA(event.id) + "</div>",
+      '  <div class="popup-row"><span class="popup-label">RelID:</span> ' + valueOrNA(event.relid) + "</div>",
+      '  <div class="popup-row"><span class="popup-label">Date:</span> ' + valueOrNA(event.date_start) + "</div>",
       '  <div class="popup-row"><span class="popup-label">Year:</span> ' + valueOrNA(event.year) + "</div>",
-      '  <div class="popup-row"><span class="popup-label">Location:</span> ' + valueOrNA(event.location) + "</div>",
-      '  <div class="popup-row"><span class="popup-label">Dyad:</span> ' + valueOrNA(event.dyad) + "</div>",
+      '  <div class="popup-row"><span class="popup-label">Location:</span> ' + valueOrNA(event.where_description) + "</div>",
+      '  <div class="popup-row"><span class="popup-label">Dyad:</span> ' + valueOrNA(event.dyad_name) + "</div>",
       '  <div class="popup-row"><span class="popup-label">Type of violence:</span> ' + valueOrNA(event.type) + "</div>",
       '  <div class="popup-row"><span class="popup-label">Fatalities:</span> ' + valueOrNA(event.fatalities) + "</div>",
       '  <div class="popup-row"><span class="popup-label">Civilian deaths:</span> ' + valueOrNA(event.deaths_civilians) + "</div>",
-      '  <div class="popup-source"><span class="popup-label">Source:</span> ' + valueOrNA(event.source) + "</div>",
+      '  <div class="popup-source"><span class="popup-label">Source:</span> ' + valueOrNA(event.source_office) + "</div>",
+      '  <div class="popup-row"><span class="popup-label">Source headline:</span> ' + valueOrNA(event.source_headline) + "</div>",
       "</div>"
     ].join("\n");
   }
