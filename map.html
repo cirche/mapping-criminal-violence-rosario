@@ -17,262 +17,135 @@
       color: white;
     }
 
-    .navbar {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background-color: #0b0b0b;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 15px 40px;
-      z-index: 1000;
-      box-sizing: border-box;
-    }
-
-    .nav-links {
-      list-style: none;
-      display: flex;
-      gap: 25px;
-      margin: 0;
-      padding: 0;
-    }
-
-    .nav-links a {
-      color: #ccc;
-      text-decoration: none;
-      font-size: 0.9rem;
-    }
-
-    .nav-links a:hover {
-      color: #c1121f;
-    }
-
     .content {
       margin-top: 80px;
       padding: 30px;
     }
 
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-    }
-
-    p {
-      color: #ccc;
-      max-width: 850px;
-      line-height: 1.6;
+    #map {
+      height: 650px;
+      margin-top: 20px;
     }
 
     .controls {
       margin-top: 20px;
-      margin-bottom: 10px;
       display: flex;
       gap: 15px;
       align-items: center;
-      flex-wrap: wrap;
     }
 
-    select {
+    select, button {
       padding: 8px;
       background: #111;
       color: white;
       border: 1px solid #333;
+      cursor: pointer;
     }
 
-    .counter {
-      color: #ccc;
-      font-size: 0.95rem;
-    }
-
-    #map {
-      height: 650px;
-      width: 100%;
-      margin-top: 20px;
-      border: 1px solid #333;
-    }
-
-    .popup-title {
-      font-weight: bold;
-      font-size: 14px;
-      margin-bottom: 8px;
-      color: #111;
-      max-width: 280px;
-    }
-
-    .popup-row {
-      font-size: 13px;
-      margin-bottom: 4px;
-      color: #333;
-    }
-
-    .popup-label {
-      font-weight: bold;
+    .active {
+      background: #c1121f;
     }
   </style>
 </head>
 
 <body>
-  <nav class="navbar">
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="map.html">Interactive Map</a></li>
-      <li><a href="data.html">Data & Visualisations</a></li>
-      <li><a href="methodology.html">Methodology</a></li>
-      <li><a href="rosario.html">Rosario Analysis</a></li>
-      <li><a href="about.html">Research Profile</a></li>
-    </ul>
-  </nav>
 
-  <main class="content">
-    <h1>Interactive Map</h1>
-    <p>
-      Explore georeferenced events of criminal violence in Rosario and the surrounding area.
-      Events are grouped into clusters when they overlap or are very close to each other.
-    </p>
+<div class="content">
+  <h1>Interactive Map</h1>
 
-    <div class="controls">
-      <label for="yearFilter">Select Year:</label>
-      <select id="yearFilter">
-        <option value="all">All Years</option>
-        <option value="2025">2025</option>
-        <option value="2024">2024</option>
-        <option value="2023">2023</option>
-        <option value="2022">2022</option>
-      </select>
+  <div class="controls">
+    <select id="yearFilter">
+      <option value="all">All Years</option>
+      <option value="2025">2025</option>
+      <option value="2024">2024</option>
+      <option value="2023">2023</option>
+      <option value="2022">2022</option>
+    </select>
 
-      <span class="counter" id="counter">Events displayed: 0</span>
-    </div>
+    <button id="markerBtn" class="active">Markers</button>
+    <button id="heatBtn">Heatmap</button>
+  </div>
 
-    <div id="map"></div>
-  </main>
+  <div id="map"></div>
+</div>
 
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
 
-  <script>
-    var map = L.map('map').setView([-32.95, -60.66], 11);
+<script>
+  var map = L.map('map').setView([-32.95, -60.66], 11);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-    var markerCluster = L.markerClusterGroup({
-      spiderfyOnMaxZoom: false,
-      zoomToBoundsOnClick: true,
-      showCoverageOnHover: false,
-      maxClusterRadius: 50
-    });
+  var markerCluster = L.markerClusterGroup({
+    spiderfyOnMaxZoom: false
+  });
 
-    map.addLayer(markerCluster);
+  var heatLayer = L.heatLayer([], { radius: 25 });
 
-    var allData = [];
+  map.addLayer(markerCluster);
 
-    var redIcon = new L.Icon({
-      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
-      shadowUrl: 'https://unpkg.com/leaflet/dist/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
-    });
+  var allData = [];
+  var mode = "markers";
 
-    var orangeIcon = new L.Icon({
-      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
-      shadowUrl: 'https://unpkg.com/leaflet/dist/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
-    });
+  function loadData(year) {
+    markerCluster.clearLayers();
+    heatLayer.setLatLngs([]);
 
-    var blueIcon = new L.Icon({
-      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
-      shadowUrl: 'https://unpkg.com/leaflet/dist/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
-    });
+    var heatPoints = [];
 
-    function getIcon(event) {
-      var type = (event.type || "").toLowerCase();
-      var description = (event.description || "").toLowerCase();
+    allData.forEach(event => {
+      if (!event.lat || !event.lng) return;
 
-      if (
-        type.includes("civilian") ||
-        description.includes("civilian") ||
-        description.includes("civilians")
-      ) {
-        return redIcon;
-      }
+      if (year === "all" || String(event.year) === year) {
 
-      if (
-        type.includes("violence") ||
-        type.includes("attack") ||
-        description.includes("attack") ||
-        description.includes("shooting")
-      ) {
-        return orangeIcon;
-      }
-
-      return blueIcon;
-    }
-
-    function buildPopup(event) {
-      return `
-        <div class="popup-title">${event.description || "No description available"}</div>
-        <div class="popup-row"><span class="popup-label">Year:</span> ${event.year || "N/A"}</div>
-        <div class="popup-row"><span class="popup-label">Fatalities:</span> ${event.fatalities ?? "N/A"}</div>
-        <div class="popup-row"><span class="popup-label">Type:</span> ${event.type || "N/A"}</div>
-      `;
-    }
-
-    function loadMarkers(year) {
-      markerCluster.clearLayers();
-
-      var displayed = 0;
-      var bounds = [];
-
-      allData.forEach(function(event) {
-        var lat = Number(event.lat);
-        var lng = Number(event.lng);
-
-        if (!lat || !lng || !event.year) return;
-
-        if (year === "all" || String(event.year) === String(year)) {
-          var marker = L.marker([lat, lng], {
-            icon: getIcon(event)
-          }).bindPopup(buildPopup(event));
+        if (mode === "markers") {
+          var marker = L.marker([event.lat, event.lng])
+            .bindPopup(event.description || "No description");
 
           markerCluster.addLayer(marker);
-          bounds.push([lat, lng]);
-          displayed++;
         }
-      });
 
-      document.getElementById("counter").innerText = "Events displayed: " + displayed;
-
-      if (bounds.length > 0) {
-        map.fitBounds(bounds, {
-          padding: [30, 30],
-          maxZoom: 12
-        });
+        if (mode === "heat") {
+          heatPoints.push([event.lat, event.lng, event.fatalities || 1]);
+        }
       }
+    });
+
+    if (mode === "heat") {
+      heatLayer.setLatLngs(heatPoints);
+      map.addLayer(heatLayer);
+    } else {
+      map.removeLayer(heatLayer);
     }
+  }
 
-    fetch("data.json")
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(data) {
-        allData = data;
-        loadMarkers("all");
+  fetch("data.json")
+    .then(res => res.json())
+    .then(data => {
+      allData = data;
+      loadData("all");
 
-        document.getElementById("yearFilter").addEventListener("change", function() {
-          loadMarkers(this.value);
-        });
+      document.getElementById("yearFilter").addEventListener("change", function() {
+        loadData(this.value);
       });
-  </script>
+    });
+
+  document.getElementById("markerBtn").onclick = function() {
+    mode = "markers";
+    this.classList.add("active");
+    heatBtn.classList.remove("active");
+    loadData(document.getElementById("yearFilter").value);
+  };
+
+  document.getElementById("heatBtn").onclick = function() {
+    mode = "heat";
+    this.classList.add("active");
+    markerBtn.classList.remove("active");
+    loadData(document.getElementById("yearFilter").value);
+  };
+</script>
+
 </body>
 </html>
