@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mapping Criminal Violence in Rosario</title>
 
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
   <style>
     body {
       margin: 0;
@@ -47,17 +50,45 @@
     .btn:hover {
       background-color: #a10f1a;
     }
+
+    #map {
+      height: 500px;
+      width: 100%;
+    }
   </style>
 </head>
 
 <body>
+  <!-- HERO -->
   <div class="hero">
     <h1>Mapping Criminal Violence in Rosario</h1>
     <p>
       A data-driven analysis of urban violence, drug trafficking, 
       and criminal governance in Argentina.
     </p>
-    <a href="#" class="btn">Explore the Map</a>
+    <a href="#map" class="btn">Explore the Map</a>
   </div>
+
+  <!-- MAP -->
+  <div id="map"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <script>
+    var map = L.map('map').setView([-32.95, -60.66], 12);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // DEMO markers
+    L.marker([-32.95, -60.66]).addTo(map)
+      .bindPopup("Sample event in Rosario")
+      .openPopup();
+
+    L.marker([-32.97, -60.64]).addTo(map)
+      .bindPopup("Another event");
+  </script>
 </body>
 </html>
