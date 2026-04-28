@@ -1,10 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Interactive Map</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0b0b0b;
+      color: white;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background-color: #0b0b0b;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      z-index: 1000;
+      box-sizing: border-box;
+    }
+
+    .logo {
+      font-weight: bold;
+      color: white;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      color: #ccc;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .nav-links a:hover {
+      color: #c1121f;
+    }
+
+    .content {
+      margin-top: 60px;
+      padding: 20px;
+    }
+
+    #map {
+      height: 600px;
+      width: 100%;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Interactive Map</h1>
+  <nav class="navbar">
+    <div class="logo">MCVR</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="map.html">Interactive Map</a></li>
+      <li><a href="data.html">Data & Visualisations</a></li>
+      <li><a href="methodology.html">Methodology</a></li>
+      <li><a href="rosario.html">Rosario Analysis</a></li>
+      <li><a href="about.html">Research Profile</a></li>
+    </ul>
+  </nav>
+
+  <div class="content">
+    <h1>Interactive Map</h1>
+    <div id="map"></div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <script>
+    var map = L.map('map').setView([-32.95, -60.66], 12);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Demo markers
+    L.marker([-32.95, -60.66]).addTo(map)
+      .bindPopup("Sample event in Rosario");
+
+    L.marker([-32.97, -60.64]).addTo(map)
+      .bindPopup("Another event");
+  </script>
 </body>
 </html>
