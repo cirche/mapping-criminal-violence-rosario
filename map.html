@@ -99,7 +99,7 @@
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    // 🎨 icone colorate
+    // 🔴 ROSSO = civilian targeting / one-sided violence
     var redIcon = new L.Icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
       shadowUrl: 'https://unpkg.com/leaflet/dist/images/marker-shadow.png',
@@ -107,6 +107,7 @@
       iconAnchor: [12, 41]
     });
 
+    // 🟠 ARANCIONE = armed violence / attacks
     var orangeIcon = new L.Icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
       shadowUrl: 'https://unpkg.com/leaflet/dist/images/marker-shadow.png',
@@ -114,6 +115,7 @@
       iconAnchor: [12, 41]
     });
 
+    // 🔵 BLU = altro / non classificato
     var blueIcon = new L.Icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
       shadowUrl: 'https://unpkg.com/leaflet/dist/images/marker-shadow.png',
@@ -121,9 +123,22 @@
       iconAnchor: [12, 41]
     });
 
-    function getIcon(type) {
-      if (type === "homicide") return redIcon;
-      if (type === "violence") return orangeIcon;
+    // 🔥 LOGICA UCDP BASE
+    function getIcon(event) {
+      if (
+        event.type === "civilian targeting" ||
+        event.description.toLowerCase().includes("civilians")
+      ) {
+        return redIcon;
+      }
+
+      if (
+        event.type === "violence" ||
+        event.description.toLowerCase().includes("attack")
+      ) {
+        return orangeIcon;
+      }
+
       return blueIcon;
     }
 
@@ -137,7 +152,7 @@
         if (year === "all" || event.year === year) {
 
           var marker = L.marker([event.lat, event.lng], {
-            icon: getIcon(event.type)
+            icon: getIcon(event)
           })
           .addTo(map)
           .bindPopup(
