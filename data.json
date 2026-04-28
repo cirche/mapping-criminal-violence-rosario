@@ -1,0 +1,34 @@
+[
+  {
+    "lat": -32.944,
+    "lng": -60.650,
+    "year": "2024",
+    "fatalities": 4,
+    "type": "civilian targeting",
+    "description": "XXX160 - Civilians"
+  },
+  {
+    "lat": -32.950,
+    "lng": -60.660,
+    "year": "2024",
+    "fatalities": 1,
+    "type": "civilian targeting",
+    "description": "XXX160 - Civilians"
+  },
+  {
+    "lat": -32.960,
+    "lng": -60.670,
+    "year": "2024",
+    "fatalities": 3,
+    "type": "civilian targeting",
+    "description": "XXX160 - Civilians"
+  },
+  {
+    "lat": -32.970,
+    "lng": -60.640,
+    "year": "2024",
+    "fatalities": 1,
+    "type": "civilian targeting",
+    "description": "XXX160 - Civilians"
+  }
+]
