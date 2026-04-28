@@ -25,15 +25,12 @@
       align-items: center;
       padding: 15px 40px;
       z-index: 1000;
-      box-sizing: border-box;
     }
 
     .nav-links {
       list-style: none;
       display: flex;
       gap: 25px;
-      margin: 0;
-      padding: 0;
     }
 
     .nav-links a {
@@ -51,22 +48,9 @@
       padding: 30px;
     }
 
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-    }
-
-    p {
-      color: #ccc;
-      max-width: 800px;
-      line-height: 1.6;
-    }
-
     #map {
       height: 600px;
-      width: 100%;
       margin-top: 30px;
-      border: 1px solid #333;
     }
 
     select {
@@ -93,10 +77,6 @@
 
   <main class="content">
     <h1>Interactive Map</h1>
-    <p>
-      Explore georeferenced events of criminal violence in Rosario.
-      Use the filter to visualise events by year.
-    </p>
 
     <label for="yearFilter">Select Year:</label>
     <select id="yearFilter">
@@ -119,13 +99,35 @@
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    var markers = [];
+    // 🎨 icone colorate
+    var redIcon = new L.Icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+      shadowUrl: 'https://unpkg.com/leaflet/dist/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41]
+    });
 
-    function getColor(type) {
-      if (type === "homicide") return "#c1121f";       // rosso
-      if (type === "violence") return "#f4a261";       // arancione
-      return "#457b9d";                                // blu
+    var orangeIcon = new L.Icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
+      shadowUrl: 'https://unpkg.com/leaflet/dist/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41]
+    });
+
+    var blueIcon = new L.Icon({
+      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+      shadowUrl: 'https://unpkg.com/leaflet/dist/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41]
+    });
+
+    function getIcon(type) {
+      if (type === "homicide") return redIcon;
+      if (type === "violence") return orangeIcon;
+      return blueIcon;
     }
+
+    var markers = [];
 
     function loadMarkers(data, year) {
       markers.forEach(m => map.removeLayer(m));
@@ -134,15 +136,8 @@
       data.forEach(event => {
         if (year === "all" || event.year === year) {
 
-          var size = 5 + (event.fatalities * 3);
-          var color = getColor(event.type);
-
-          var circle = L.circleMarker([event.lat, event.lng], {
-            radius: size,
-            color: color,
-            fillColor: color,
-            fillOpacity: 0.7,
-            weight: 1
+          var marker = L.marker([event.lat, event.lng], {
+            icon: getIcon(event.type)
           })
           .addTo(map)
           .bindPopup(
@@ -152,7 +147,7 @@
             "Type: " + event.type
           );
 
-          markers.push(circle);
+          markers.push(marker);
         }
       });
     }
