@@ -97,6 +97,7 @@
       font-size: 14px;
       margin-bottom: 8px;
       color: #111;
+      max-width: 280px;
     }
 
     .popup-row {
@@ -157,9 +158,10 @@
     }).addTo(map);
 
     var markerCluster = L.markerClusterGroup({
+      spiderfyOnMaxZoom: false,
+      zoomToBoundsOnClick: true,
       showCoverageOnHover: false,
-      spiderfyOnMaxZoom: true,
-      maxClusterRadius: 45
+      maxClusterRadius: 50
     });
 
     map.addLayer(markerCluster);
