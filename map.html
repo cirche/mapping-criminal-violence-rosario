@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Interactive Map</title>
 
-  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
   <style>
@@ -22,16 +21,11 @@
       width: 100%;
       background-color: #0b0b0b;
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
       padding: 15px 40px;
       z-index: 1000;
       box-sizing: border-box;
-    }
-
-    .logo {
-      font-weight: bold;
-      color: white;
     }
 
     .nav-links {
@@ -53,20 +47,32 @@
     }
 
     .content {
-      margin-top: 60px;
-      padding: 20px;
+      margin-top: 80px;
+      padding: 30px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #ccc;
+      max-width: 800px;
+      line-height: 1.6;
     }
 
     #map {
       height: 600px;
       width: 100%;
+      margin-top: 30px;
+      border: 1px solid #333;
     }
   </style>
 </head>
 
 <body>
   <nav class="navbar">
-    <div class="logo">MCVR</div>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="map.html">Interactive Map</a></li>
@@ -77,12 +83,17 @@
     </ul>
   </nav>
 
-  <div class="content">
+  <main class="content">
     <h1>Interactive Map</h1>
-    <div id="map"></div>
-  </div>
+    <p>
+      Explore georeferenced events of criminal violence in Rosario. 
+      This section will later include filters by year, actor, event type, 
+      location, and fatalities.
+    </p>
 
-  <!-- Leaflet JS -->
+    <div id="map"></div>
+  </main>
+
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
   <script>
@@ -92,12 +103,11 @@
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    // Demo markers
     L.marker([-32.95, -60.66]).addTo(map)
       .bindPopup("Sample event in Rosario");
 
     L.marker([-32.97, -60.64]).addTo(map)
-      .bindPopup("Another event");
+      .bindPopup("Another sample event");
   </script>
 </body>
 </html>
