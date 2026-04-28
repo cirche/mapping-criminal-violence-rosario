@@ -18,7 +18,6 @@
     }
 
     .content {
-      margin-top: 40px;
       padding: 30px;
     }
 
@@ -31,12 +30,6 @@
       color: #ccc;
       max-width: 850px;
       line-height: 1.6;
-    }
-
-    #map {
-      height: 650px;
-      margin-top: 20px;
-      border: 1px solid #333;
     }
 
     .controls {
@@ -87,6 +80,12 @@
       font-size: 0.8rem;
       color: #aaa;
     }
+
+    #map {
+      height: 650px;
+      margin-top: 20px;
+      border: 1px solid #333;
+    }
   </style>
 </head>
 
@@ -95,8 +94,8 @@
 <div class="content">
   <h1>Interactive Map</h1>
   <p>
-    Explore georeferenced events of criminal violence in Rosario and the surrounding area.
-    Use the controls to switch between individual clustered events and spatial concentration.
+    Explore georeferenced events of criminal violence. Use the controls to switch
+    between clustered event markers and heatmap concentration.
   </p>
 
   <div class="controls">
@@ -142,33 +141,79 @@
     spiderfyOnMaxZoom: false,
     zoomToBoundsOnClick: true,
     showCoverageOnHover: false,
-    maxClusterRadius: 50
-  });
-
-  var heatLayer = L.heatLayer([], {
-    radius: 28,
-    blur: 18,
-    maxZoom: 13,
-    minOpacity: 0.35,
-    gradient: {
-      0.20: "blue",
-      0.40: "lime",
-      0.60: "yellow",
-      0.80: "orange",
-      1.00: "red"
-    }
+    maxClusterRadius: 45
   });
 
   map.addLayer(markerCluster);
 
+  var heatLayer = null;
+  var currentHeatPoints = [];
   var allData = [];
   var mode = "markers";
 
+  function getHeatOptions() {
+    var zoom = map.getZoom();
+
+    if (zoom >= 14) {
+      return {
+        radius: 12,
+        blur: 8,
+        maxZoom: 17,
+        minOpacity: 0.25,
+        gradient: {
+          0.20: "blue",
+          0.40: "lime",
+          0.60: "yellow",
+          0.80: "orange",
+          1.00: "red"
+        }
+      };
+    }
+
+    if (zoom >= 12) {
+      return {
+        radius: 18,
+        blur: 12,
+        maxZoom: 16,
+        minOpacity: 0.25,
+        gradient: {
+          0.20: "blue",
+          0.40: "lime",
+          0.60: "yellow",
+          0.80: "orange",
+          1.00: "red"
+        }
+      };
+    }
+
+    return {
+      radius: 28,
+      blur: 18,
+      maxZoom: 14,
+      minOpacity: 0.30,
+      gradient: {
+        0.20: "blue",
+        0.40: "lime",
+        0.60: "yellow",
+        0.80: "orange",
+        1.00: "red"
+      }
+    };
+  }
+
+  function refreshHeatLayer() {
+    if (heatLayer) {
+      map.removeLayer(heatLayer);
+    }
+
+    heatLayer = L.heatLayer(currentHeatPoints, getHeatOptions());
+    map.addLayer(heatLayer);
+  }
+
   function loadData(year) {
     markerCluster.clearLayers();
-    heatLayer.setLatLngs([]);
+    currentHeatPoints = [];
 
-    var heatPoints = [];
     var displayed = 0;
     var bounds = [];
 
@@ -196,7 +241,7 @@
         }
 
         if (mode === "heat") {
-          heatPoints.push([lat, lng, Math.max(1, Math.min(fatalities, 5))]);
+          currentHeatPoints.push([lat, lng, Math.min(fatalities, 3)]);
         }
       }
     });
@@ -205,16 +250,17 @@
 
     if (mode === "heat") {
       map.removeLayer(markerCluster);
-      heatLayer.setLatLngs(heatPoints);
-      map.addLayer(heatLayer);
+      refreshHeatLayer();
       document.getElementById("heatLegend").style.display = "block";
     } else {
-      map.removeLayer(heatLayer);
+      if (heatLayer) {
+        map.removeLayer(heatLayer);
+      }
       map.addLayer(markerCluster);
       document.getElementById("heatLegend").style.display = "none";
     }
 
-    if (bounds.length > 0) {
+    if (bounds.length > 0 && year !== "all") {
       map.fitBounds(bounds, {
         padding: [30, 30],
         maxZoom: 12
@@ -246,6 +292,12 @@
     document.getElementById("markerBtn").classList.remove("active");
     loadData(document.getElementById("yearFilter").value);
   };
+
+  map.on("zoomend", function() {
+    if (mode === "heat") {
+      refreshHeatLayer();
+    }
+  });
 </script>
 
 </body>
