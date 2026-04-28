@@ -127,19 +127,27 @@
 
       data.forEach(event => {
         if (year === "all" || event.year === year) {
-          var marker = L.marker([event.lat, event.lng])
-            .addTo(map)
-            .bindPopup(
-              event.description + "<br>" +
-              "Year: " + event.year + "<br>" +
-              "Fatalities: " + event.fatalities
-            );
-          markers.push(marker);
+          var size = 5 + (event.fatalities * 3);
+
+          var circle = L.circleMarker([event.lat, event.lng], {
+            radius: size,
+            color: "#c1121f",
+            fillColor: "#c1121f",
+            fillOpacity: 0.6,
+            weight: 1
+          })
+          .addTo(map)
+          .bindPopup(
+            event.description + "<br>" +
+            "Year: " + event.year + "<br>" +
+            "Fatalities: " + event.fatalities
+          );
+
+          markers.push(circle);
         }
       });
     }
 
-    // 🔥 QUI leggiamo il file data.json
     fetch("data.json")
       .then(response => response.json())
       .then(data => {
