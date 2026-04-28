@@ -68,7 +68,7 @@
 
   function buildEventPopup(event, displayInfo) {
     var offsetNote = displayInfo && displayInfo.isJittered
-      ? '<div class="popup-source"><span class="popup-label">Map note:</span> marker slightly offset to separate overlapping events with identical coordinates.</div>'
+      ? '<div class="popup-source"><span class="popup-label">Map note:</span> marker slightly offset for visual separation only. Original coordinates are preserved below.</div>'
       : "";
 
     return [
@@ -122,9 +122,7 @@
   function isInsideGeometry(point, geometry) {
     if (!geometry) return false;
 
-    if (geometry.type === "Polygon") {
-      return pointInPolygon(point, geometry.coordinates[0]);
-    }
+    if (geometry.type === "Polygon") return pointInPolygon(point, geometry.coordinates[0]);
 
     if (geometry.type === "MultiPolygon") {
       return geometry.coordinates.some(function (polygon) {
@@ -138,30 +136,15 @@
   function getBarrioName(feature) {
     var properties = (feature && feature.properties) || {};
 
-    return (
-      properties.BARRIO ||
-      properties.barrio ||
-      properties.NOMBRE ||
-      properties.nombre ||
-      properties.name ||
-      "Unnamed neighbourhood"
-    );
+    return properties.BARRIO || properties.barrio || properties.NOMBRE || properties.nombre || properties.name || "Unnamed neighbourhood";
   }
 
   function resetRenderableLayers() {
     markerClusterLayer.clearLayers();
 
-    if (map.hasLayer(markerClusterLayer)) {
-      map.removeLayer(markerClusterLayer);
-    }
-
-    if (map.hasLayer(heatLayer)) {
-      map.removeLayer(heatLayer);
-    }
-
-    if (state.barriosLayer && map.hasLayer(state.barriosLayer)) {
-      map.removeLayer(state.barriosLayer);
-    }
+    if (map.hasLayer(markerClusterLayer)) map.removeLayer(markerClusterLayer);
+    if (map.hasLayer(heatLayer)) map.removeLayer(heatLayer);
+    if (state.barriosLayer && map.hasLayer(state.barriosLayer)) map.removeLayer(state.barriosLayer);
   }
 
   function getFilteredEvents(year) {
@@ -190,7 +173,9 @@
     });
 
     var displayItems = [];
-    var baseRadius = 0.00028;
+    var baseRadius = 0.000035;
+    var maxRadius = 0.0012;
+    var goldenAngle = Math.PI * (3 - Math.sqrt(5));
 
     Object.keys(grouped).forEach(function (key) {
       var group = grouped[key];
@@ -204,10 +189,8 @@
         var isJittered = total > 1;
 
         if (isJittered) {
-          var ring = Math.floor(index / 12) + 1;
-          var positionInRing = index % 12;
-          var angle = (2 * Math.PI * positionInRing) / Math.min(total, 12);
-          var radius = baseRadius * ring;
+          var angle = index * goldenAngle;
+          var radius = Math.min(maxRadius, baseRadius * Math.sqrt(index + 1));
           displayLat = lat + Math.sin(angle) * radius;
           displayLng = lng + Math.cos(angle) * radius;
         }
@@ -258,9 +241,7 @@
       var point = [Number(event.lng), Number(event.lat)];
 
       state.barriosGeoJSON.features.forEach(function (feature) {
-        if (isInsideGeometry(point, feature.geometry)) {
-          counts[getBarrioName(feature)] += 1;
-        }
+        if (isInsideGeometry(point, feature.geometry)) counts[getBarrioName(feature)] += 1;
       });
     });
 
@@ -303,9 +284,7 @@
     map.addLayer(state.barriosLayer);
 
     var bounds = state.barriosLayer.getBounds();
-    if (bounds.isValid()) {
-      map.fitBounds(bounds, { padding: [25, 25], maxZoom: 12 });
-    }
+    if (bounds.isValid()) map.fitBounds(bounds, { padding: [25, 25], maxZoom: 12 });
   }
 
   function updateCounter(count) {
@@ -313,19 +292,9 @@
   }
 
   function renderCurrentMode(events) {
-    if (state.mode === MODES.MARKERS) {
-      renderMarkers(events);
-      return;
-    }
-
-    if (state.mode === MODES.HEAT) {
-      renderHeatmap(events);
-      return;
-    }
-
-    if (state.mode === MODES.DENSITY) {
-      renderDensity(events);
-    }
+    if (state.mode === MODES.MARKERS) return renderMarkers(events);
+    if (state.mode === MODES.HEAT) return renderHeatmap(events);
+    if (state.mode === MODES.DENSITY) renderDensity(events);
   }
 
   function updateMap() {
@@ -349,29 +318,14 @@
 
   function attachEventHandlers() {
     ui.yearFilter.addEventListener("change", updateMap);
-    ui.markerBtn.addEventListener("click", function () {
-      setMode(MODES.MARKERS);
-    });
-    ui.heatBtn.addEventListener("click", function () {
-      setMode(MODES.HEAT);
-    });
-    ui.densityBtn.addEventListener("click", function () {
-      setMode(MODES.DENSITY);
-    });
+    ui.markerBtn.addEventListener("click", function () { setMode(MODES.MARKERS); });
+    ui.heatBtn.addEventListener("click", function () { setMode(MODES.HEAT); });
+    ui.densityBtn.addEventListener("click", function () { setMode(MODES.DENSITY); });
   }
 
   function loadDatasets() {
-    var eventsRequest = fetch("data.json").then(function (response) {
-      return response.json();
-    });
-
-    var barriosRequest = fetch("barrios.geojson")
-      .then(function (response) {
-        return response.json();
-      })
-      .catch(function () {
-        return null;
-      });
+    var eventsRequest = fetch("data.json").then(function (response) { return response.json(); });
+    var barriosRequest = fetch("barrios.geojson").then(function (response) { return response.json(); }).catch(function () { return null; });
 
     Promise.all([eventsRequest, barriosRequest]).then(function (results) {
       state.events = results[0] || [];
