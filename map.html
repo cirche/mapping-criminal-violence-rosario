@@ -115,39 +115,40 @@
   <script>
     var map = L.map('map').setView([-32.95, -60.66], 12);
 
-    // ✅ MAPPA ORIGINALE (quella che preferivi)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    var events = [
-      { coords: [-32.95, -60.66], year: "2025", text: "Event 2025" },
-      { coords: [-32.97, -60.64], year: "2024", text: "Event 2024" },
-      { coords: [-32.96, -60.67], year: "2023", text: "Event 2023" },
-      { coords: [-32.94, -60.65], year: "2022", text: "Event 2022" }
-    ];
-
     var markers = [];
 
-    function loadMarkers(year) {
+    function loadMarkers(data, year) {
       markers.forEach(m => map.removeLayer(m));
       markers = [];
 
-      events.forEach(event => {
+      data.forEach(event => {
         if (year === "all" || event.year === year) {
-          var marker = L.marker(event.coords)
+          var marker = L.marker([event.lat, event.lng])
             .addTo(map)
-            .bindPopup(event.text + " (" + event.year + ")");
+            .bindPopup(
+              event.description + "<br>" +
+              "Year: " + event.year + "<br>" +
+              "Fatalities: " + event.fatalities
+            );
           markers.push(marker);
         }
       });
     }
 
-    loadMarkers("all");
+    // 🔥 QUI leggiamo il file data.json
+    fetch("data.json")
+      .then(response => response.json())
+      .then(data => {
+        loadMarkers(data, "all");
 
-    document.getElementById("yearFilter").addEventListener("change", function() {
-      loadMarkers(this.value);
-    });
+        document.getElementById("yearFilter").addEventListener("change", function() {
+          loadMarkers(data, this.value);
+        });
+      });
   </script>
 </body>
 </html>
