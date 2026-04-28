@@ -18,13 +18,25 @@
     }
 
     .content {
-      margin-top: 80px;
+      margin-top: 40px;
       padding: 30px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #ccc;
+      max-width: 850px;
+      line-height: 1.6;
     }
 
     #map {
       height: 650px;
       margin-top: 20px;
+      border: 1px solid #333;
     }
 
     .controls {
@@ -32,10 +44,11 @@
       display: flex;
       gap: 15px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     select, button {
-      padding: 8px;
+      padding: 8px 12px;
       background: #111;
       color: white;
       border: 1px solid #333;
@@ -44,6 +57,35 @@
 
     .active {
       background: #c1121f;
+      border-color: #c1121f;
+    }
+
+    .counter {
+      color: #ccc;
+      font-size: 0.95rem;
+    }
+
+    .legend {
+      margin-top: 15px;
+      background: #111;
+      border: 1px solid #333;
+      padding: 12px;
+      max-width: 360px;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+
+    .gradient-bar {
+      height: 12px;
+      margin: 8px 0;
+      background: linear-gradient(to right, blue, lime, yellow, orange, red);
+    }
+
+    .legend-scale {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #aaa;
     }
   </style>
 </head>
@@ -52,8 +94,13 @@
 
 <div class="content">
   <h1>Interactive Map</h1>
+  <p>
+    Explore georeferenced events of criminal violence in Rosario and the surrounding area.
+    Use the controls to switch between individual clustered events and spatial concentration.
+  </p>
 
   <div class="controls">
+    <label for="yearFilter">Select Year:</label>
     <select id="yearFilter">
       <option value="all">All Years</option>
       <option value="2025">2025</option>
@@ -64,6 +111,17 @@
 
     <button id="markerBtn" class="active">Markers</button>
     <button id="heatBtn">Heatmap</button>
+
+    <span class="counter" id="counter">Events displayed: 0</span>
+  </div>
+
+  <div class="legend" id="heatLegend" style="display: none;">
+    <strong>Heatmap intensity</strong>
+    <div class="gradient-bar"></div>
+    <div class="legend-scale">
+      <span>Lower concentration</span>
+      <span>Higher concentration</span>
+    </div>
   </div>
 
   <div id="map"></div>
@@ -76,13 +134,30 @@
 <script>
   var map = L.map('map').setView([-32.95, -60.66], 11);
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
 
   var markerCluster = L.markerClusterGroup({
-    spiderfyOnMaxZoom: false
+    spiderfyOnMaxZoom: false,
+    zoomToBoundsOnClick: true,
+    showCoverageOnHover: false,
+    maxClusterRadius: 50
   });
 
-  var heatLayer = L.heatLayer([], { radius: 25 });
+  var heatLayer = L.heatLayer([], {
+    radius: 28,
+    blur: 18,
+    maxZoom: 13,
+    minOpacity: 0.35,
+    gradient: {
+      0.20: "blue",
+      0.40: "lime",
+      0.60: "yellow",
+      0.80: "orange",
+      1.00: "red"
+    }
+  });
 
   map.addLayer(markerCluster);
 
@@ -94,30 +169,56 @@
     heatLayer.setLatLngs([]);
 
     var heatPoints = [];
+    var displayed = 0;
+    var bounds = [];
 
-    allData.forEach(event => {
-      if (!event.lat || !event.lng) return;
+    allData.forEach(function(event) {
+      var lat = Number(event.lat);
+      var lng = Number(event.lng);
+      var fatalities = Number(event.fatalities) || 1;
 
-      if (year === "all" || String(event.year) === year) {
+      if (!lat || !lng || !event.year) return;
+
+      if (year === "all" || String(event.year) === String(year)) {
+        displayed++;
+        bounds.push([lat, lng]);
 
         if (mode === "markers") {
-          var marker = L.marker([event.lat, event.lng])
-            .bindPopup(event.description || "No description");
+          var marker = L.marker([lat, lng])
+            .bindPopup(
+              "<strong>" + (event.description || "No description available") + "</strong><br>" +
+              "Year: " + event.year + "<br>" +
+              "Fatalities: " + fatalities + "<br>" +
+              "Type: " + (event.type || "N/A")
+            );
 
           markerCluster.addLayer(marker);
         }
 
         if (mode === "heat") {
-          heatPoints.push([event.lat, event.lng, event.fatalities || 1]);
+          heatPoints.push([lat, lng, Math.max(1, Math.min(fatalities, 5))]);
         }
       }
     });
 
+    document.getElementById("counter").innerText = "Events displayed: " + displayed;
+
     if (mode === "heat") {
+      map.removeLayer(markerCluster);
       heatLayer.setLatLngs(heatPoints);
       map.addLayer(heatLayer);
+      document.getElementById("heatLegend").style.display = "block";
     } else {
       map.removeLayer(heatLayer);
+      map.addLayer(markerCluster);
+      document.getElementById("heatLegend").style.display = "none";
+    }
+
+    if (bounds.length > 0) {
+      map.fitBounds(bounds, {
+        padding: [30, 30],
+        maxZoom: 12
+      });
     }
   }
 
@@ -135,14 +236,14 @@
   document.getElementById("markerBtn").onclick = function() {
     mode = "markers";
     this.classList.add("active");
-    heatBtn.classList.remove("active");
+    document.getElementById("heatBtn").classList.remove("active");
     loadData(document.getElementById("yearFilter").value);
   };
 
   document.getElementById("heatBtn").onclick = function() {
     mode = "heat";
     this.classList.add("active");
-    markerBtn.classList.remove("active");
+    document.getElementById("markerBtn").classList.remove("active");
     loadData(document.getElementById("yearFilter").value);
   };
 </script>
