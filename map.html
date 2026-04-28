@@ -6,6 +6,8 @@
   <title>Interactive Map</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
 
   <style>
     body {
@@ -22,18 +24,28 @@
       background-color: #0b0b0b;
       display: flex;
       justify-content: center;
-      padding: 15px;
+      align-items: center;
+      padding: 15px 40px;
       z-index: 1000;
+      box-sizing: border-box;
     }
 
     .nav-links {
+      list-style: none;
       display: flex;
       gap: 25px;
+      margin: 0;
+      padding: 0;
     }
 
     .nav-links a {
       color: #ccc;
       text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .nav-links a:hover {
+      color: #c1121f;
     }
 
     .content {
@@ -41,133 +53,222 @@
       padding: 30px;
     }
 
-    #map {
-      height: 600px;
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #ccc;
+      max-width: 850px;
+      line-height: 1.6;
+    }
+
+    .controls {
       margin-top: 20px;
+      margin-bottom: 10px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
     }
 
     select {
-      margin-top: 20px;
       padding: 8px;
       background: #111;
       color: white;
       border: 1px solid #333;
     }
 
-    /* 🔥 LEGENDA */
-    .legend {
-      position: absolute;
-      bottom: 30px;
-      right: 30px;
-      background: rgba(0,0,0,0.9);
-      padding: 15px;
+    .counter {
+      color: #ccc;
+      font-size: 0.95rem;
+    }
+
+    #map {
+      height: 650px;
+      width: 100%;
+      margin-top: 20px;
       border: 1px solid #333;
-      font-size: 0.9rem;
     }
 
-    .legend div {
-      margin-bottom: 5px;
+    .popup-title {
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: #111;
     }
 
-    .box {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      margin-right: 8px;
+    .popup-row {
+      font-size: 13px;
+      margin-bottom: 4px;
+      color: #333;
     }
 
-    .red { background: #c1121f; }
-    .orange { background: #f4a261; }
-    .blue { background: #457b9d; }
+    .popup-label {
+      font-weight: bold;
+    }
   </style>
 </head>
 
 <body>
   <nav class="navbar">
-    <div class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="map.html">Interactive Map</a>
-      <a href="data.html">Data</a>
-      <a href="methodology.html">Methodology</a>
-      <a href="rosario.html">Rosario Analysis</a>
-      <a href="about.html">Profile</a>
-    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="map.html">Interactive Map</a></li>
+      <li><a href="data.html">Data & Visualisations</a></li>
+      <li><a href="methodology.html">Methodology</a></li>
+      <li><a href="rosario.html">Rosario Analysis</a></li>
+      <li><a href="about.html">Research Profile</a></li>
+    </ul>
   </nav>
 
-  <div class="content">
+  <main class="content">
     <h1>Interactive Map</h1>
+    <p>
+      Explore georeferenced events of criminal violence in Rosario and the surrounding area.
+      Events are grouped into clusters when they overlap or are very close to each other.
+    </p>
 
-    <select id="yearFilter">
-      <option value="all">All Years</option>
-      <option value="2025">2025</option>
-      <option value="2024">2024</option>
-      <option value="2023">2023</option>
-      <option value="2022">2022</option>
-    </select>
+    <div class="controls">
+      <label for="yearFilter">Select Year:</label>
+      <select id="yearFilter">
+        <option value="all">All Years</option>
+        <option value="2025">2025</option>
+        <option value="2024">2024</option>
+        <option value="2023">2023</option>
+        <option value="2022">2022</option>
+      </select>
+
+      <span class="counter" id="counter">Events displayed: 0</span>
+    </div>
 
     <div id="map"></div>
-  </div>
-
-  <!-- 🔥 LEGENDA -->
-  <div class="legend">
-    <div><span class="box red"></span>Civilian targeting</div>
-    <div><span class="box orange"></span>Violence / attack</div>
-    <div><span class="box blue"></span>Other</div>
-  </div>
+  </main>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 
   <script>
-    var map = L.map('map').setView([-32.95, -60.66], 12);
+    var map = L.map('map').setView([-32.95, -60.66], 11);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    var markerCluster = L.markerClusterGroup({
+      showCoverageOnHover: false,
+      spiderfyOnMaxZoom: true,
+      maxClusterRadius: 45
+    });
+
+    map.addLayer(markerCluster);
+
+    var allData = [];
 
     var redIcon = new L.Icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
-      shadowUrl: 'https://unpkg.com/leaflet/dist/images/marker-shadow.png'
+      shadowUrl: 'https://unpkg.com/leaflet/dist/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
     });
 
     var orangeIcon = new L.Icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png',
-      shadowUrl: 'https://unpkg.com/leaflet/dist/images/marker-shadow.png'
+      shadowUrl: 'https://unpkg.com/leaflet/dist/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
     });
 
     var blueIcon = new L.Icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
-      shadowUrl: 'https://unpkg.com/leaflet/dist/images/marker-shadow.png'
+      shadowUrl: 'https://unpkg.com/leaflet/dist/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
     });
 
     function getIcon(event) {
-      if (event.description.toLowerCase().includes("civil")) return redIcon;
-      if (event.description.toLowerCase().includes("attack")) return orangeIcon;
+      var type = (event.type || "").toLowerCase();
+      var description = (event.description || "").toLowerCase();
+
+      if (
+        type.includes("civilian") ||
+        description.includes("civilian") ||
+        description.includes("civilians")
+      ) {
+        return redIcon;
+      }
+
+      if (
+        type.includes("violence") ||
+        type.includes("attack") ||
+        description.includes("attack") ||
+        description.includes("shooting")
+      ) {
+        return orangeIcon;
+      }
+
       return blueIcon;
     }
 
-    var markers = [];
+    function buildPopup(event) {
+      return `
+        <div class="popup-title">${event.description || "No description available"}</div>
+        <div class="popup-row"><span class="popup-label">Year:</span> ${event.year || "N/A"}</div>
+        <div class="popup-row"><span class="popup-label">Fatalities:</span> ${event.fatalities ?? "N/A"}</div>
+        <div class="popup-row"><span class="popup-label">Type:</span> ${event.type || "N/A"}</div>
+      `;
+    }
 
-    function loadMarkers(data, year) {
-      markers.forEach(m => map.removeLayer(m));
-      markers = [];
+    function loadMarkers(year) {
+      markerCluster.clearLayers();
 
-      data.forEach(event => {
-        if (year === "all" || event.year === year) {
-          var marker = L.marker([event.lat, event.lng], {
+      var displayed = 0;
+      var bounds = [];
+
+      allData.forEach(function(event) {
+        var lat = Number(event.lat);
+        var lng = Number(event.lng);
+
+        if (!lat || !lng || !event.year) return;
+
+        if (year === "all" || String(event.year) === String(year)) {
+          var marker = L.marker([lat, lng], {
             icon: getIcon(event)
-          }).addTo(map);
+          }).bindPopup(buildPopup(event));
 
-          marker.bindPopup(event.description + "<br>" + event.year);
-          markers.push(marker);
+          markerCluster.addLayer(marker);
+          bounds.push([lat, lng]);
+          displayed++;
         }
       });
+
+      document.getElementById("counter").innerText = "Events displayed: " + displayed;
+
+      if (bounds.length > 0) {
+        map.fitBounds(bounds, {
+          padding: [30, 30],
+          maxZoom: 12
+        });
+      }
     }
 
     fetch("data.json")
-      .then(res => res.json())
-      .then(data => {
-        loadMarkers(data, "all");
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        allData = data;
+        loadMarkers("all");
 
         document.getElementById("yearFilter").addEventListener("change", function() {
-          loadMarkers(data, this.value);
+          loadMarkers(this.value);
         });
       });
   </script>
