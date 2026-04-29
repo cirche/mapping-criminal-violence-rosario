@@ -1,10 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Methodology</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="site.css" />
 </head>
 <body>
-  <h1>Methodology</h1>
+  <nav class="navbar">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="map.html">Interactive Map</a></li>
+      <li><a href="data.html">Data & Visualisations</a></li>
+      <li><a href="methodology.html" class="active">Methodology</a></li>
+      <li><a href="rosario.html">Rosario Analysis</a></li>
+      <li><a href="about.html">Research Profile</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <header class="page-hero">
+      <div class="page-hero-inner">
+        <div class="eyebrow"><span>Research design</span> · Event data · Coding logic</div>
+        <h1>Methodology</h1>
+        <p class="lede">This section explains the research logic behind the project: how violent events are structured, classified and translated into a visual interface.</p>
+        <div class="cta-row">
+          <a href="data.html" class="btn btn-primary">View data structure</a>
+          <a href="rosario.html" class="btn btn-secondary">Read the analysis</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="section">
+      <div class="section-inner">
+        <h2>Event-based approach.</h2>
+        <p class="section-text">The project uses an event-data logic inspired by conflict research practices. Each observation is treated as a discrete violent incident and organised through standard fields such as date, location, coordinates, actor or dyad, type of violence, fatalities, civilian deaths and source information.</p>
+        <div class="grid three" style="margin-top: 34px;">
+          <article class="card">
+            <div class="card-number">01</div>
+            <h3>Observation</h3>
+            <p>Each row corresponds to a specific violent event rather than a broad narrative category.</p>
+          </article>
+          <article class="card">
+            <div class="card-number">02</div>
+            <h3>Classification</h3>
+            <p>Events are coded according to violence type, dyad, civilian targeting and available source detail.</p>
+          </article>
+          <article class="card">
+            <div class="card-number">03</div>
+            <h3>Spatialisation</h3>
+            <p>Coordinates allow the dataset to be explored through markers, clusters and spatial concentration layers.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="section-inner">
+        <h2>Coding principles.</h2>
+        <div class="timeline">
+          <div class="timeline-item"><p>Violence is coded conservatively when perpetrator identity, affiliation or motive remains uncertain.</p></div>
+          <div class="timeline-item"><p>Where civilians are targeted by armed actors, the event is treated as one-sided violence unless reliable information indicates a direct clash between organised groups.</p></div>
+          <div class="timeline-item"><p>Ambiguous cases require source comparison, contextual reading and, when necessary, later revision as new information appears.</p></div>
+          <div class="timeline-item"><p>Spatial precision is treated as an analytical variable: city-level, neighbourhood-level and street-level references are not interpreted as equivalent.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-inner">
+        <h2>Why visualise the data?</h2>
+        <p class="section-text">The map is not meant to replace qualitative analysis. It works as an exploratory tool that helps identify concentrations, recurring locations and spatial patterns that can then be interpreted through fieldwork, literature and source-based investigation.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>Mapping Criminal Violence in Rosario · Methodology</footer>
 </body>
 </html>
