@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Interactive Map</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="site.css" />
@@ -22,17 +20,23 @@
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="map.html" class="active">Interactive Map</a></li>
-      <li><a href="data.html">Data & Visualisations</a></li>
+      <li><a href="data.html">Data</a></li>
       <li><a href="methodology.html">Methodology</a></li>
       <li><a href="rosario.html">Rosario Analysis</a></li>
       <li><a href="about.html">Research Profile</a></li>
     </ul>
   </nav>
 
-  <div class="content" style="margin-top: 80px;">
+  <header class="page-hero">
+    <div class="page-hero-inner">
+      <h1>Interactive Map</h1>
+      <p class="lede">Explore georeferenced events of criminal violence in Rosario.</p>
+    </div>
+  </header>
+
+  <div class="content">
 
     <div class="controls">
-      <label for="yearFilter">Select Year:</label>
       <select id="yearFilter">
         <option value="all">All Years</option>
         <option value="2025">2025</option>
