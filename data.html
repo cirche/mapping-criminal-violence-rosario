@@ -1,10 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Data & Visualisations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="site.css" />
 </head>
 <body>
-  <h1>Data & Visualisations</h1>
+  <nav class="navbar">
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="map.html">Interactive Map</a></li>
+      <li><a href="data.html" class="active">Data & Visualisations</a></li>
+      <li><a href="methodology.html">Methodology</a></li>
+      <li><a href="rosario.html">Rosario Analysis</a></li>
+      <li><a href="about.html">Research Profile</a></li>
+    </ul>
+  </nav>
+  <main>
+    <header class="page-hero">
+      <div class="page-hero-inner">
+        <div class="eyebrow"><span>Mapping Criminal Violence</span> · Rosario, Argentina</div>
+        <h1>Data & Visualisations</h1>
+        <p class="lede">A compact overview of the working dataset, its structure, and the visual layers used to explore criminal violence.</p>
+      </div>
+    </header>
+    <section class="section">
+      <div class="section-inner">
+        <h2>What the dataset contains.</h2>
+        <p class="section-text">The dataset follows an event-based logic: each row represents a violent incident with date, location, coordinates, type of violence, dyad and fatalities.</p>
+      </div>
+    </section>
+  </main>
+  <footer>Mapping Criminal Violence in Rosario</footer>
 </body>
 </html>
