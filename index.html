@@ -4,81 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mapping Criminal Violence in Rosario</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Inter, sans-serif;
-      background: #080808;
-      color: #fff;
-    }
-
-    .navbar {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      padding: 16px;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(10px);
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 24px;
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .nav-links a { color: #ccc; text-decoration: none; }
-    .nav-links a:hover { color: #c1121f; }
-
-    .hero {
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 120px 40px;
-      background: radial-gradient(circle at 70% 40%, rgba(193,18,31,0.2), transparent 40%), #080808;
-    }
-
-    h1 {
-      font-family: "Space Grotesk";
-      font-size: 5rem;
-      margin: 0;
-      text-transform: uppercase;
-    }
-
-    .title-accent {
-      -webkit-text-stroke: 1px white;
-      color: transparent;
-    }
-
-    .subtitle { color: #ccc; margin-top: 20px; }
-
-    .cta-row { margin-top: 30px; display: flex; gap: 12px; }
-
-    .btn {
-      padding: 12px 20px;
-      border-radius: 999px;
-      text-decoration: none;
-    }
-
-    .btn-primary { background: #c1121f; color: white; }
-    .btn-secondary { border: 1px solid #444; color: white; }
-
-  </style>
+  <link rel="stylesheet" href="site.css" />
 </head>
 
 <body>
 
 <nav class="navbar">
   <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html" class="active">Home</a></li>
     <li><a href="map.html">Interactive Map</a></li>
     <li><a href="data.html">Data</a></li>
     <li><a href="methodology.html">Methodology</a></li>
@@ -89,13 +22,33 @@
 </nav>
 
 <section class="hero">
-  <div>
-    <h1>Mapping Criminal <span class="title-accent">Violence</span></h1>
-    <p class="subtitle">Fieldwork · UCDP · Original dataset</p>
-    <div class="cta-row">
-      <a href="map.html" class="btn btn-primary">Explore map</a>
-      <a href="thesis.html" class="btn btn-secondary">Thesis</a>
+  <div class="hero-inner">
+
+    <div class="hero-kicker">
+      <span>Argentina</span> · Urban violence · Criminal governance
     </div>
+
+    <h1>
+      Mapping Criminal
+      <span class="title-accent">Violence</span>
+    </h1>
+
+    <p class="subtitle">
+      Fieldwork in Buenos Aires · UCDP research experience · Original event-based dataset on Rosario
+    </p>
+
+    <div class="hero-meta">
+      <span class="meta-pill">Field research</span>
+      <span class="meta-pill">Event data</span>
+      <span class="meta-pill">Crimilegality</span>
+      <span class="meta-pill">Rosario case</span>
+    </div>
+
+    <div class="cta-row">
+      <a href="map.html" class="btn-primary">Explore map</a>
+      <a href="thesis.html" class="btn-secondary">Read thesis</a>
+    </div>
+
   </div>
 </section>
 
