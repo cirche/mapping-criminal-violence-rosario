@@ -8,13 +8,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
   <style>
     :root {
       --black: #080808;
-      --dark: #111111;
       --paper: #f2f0ea;
-      --grey: #c8c8c8;
       --muted: #8b8b8b;
       --white: #ffffff;
       --red: #c1121f;
@@ -22,13 +21,9 @@
       --line: rgba(255, 255, 255, 0.14);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
@@ -69,9 +64,7 @@
       transition: color 0.2s ease;
     }
 
-    .nav-links a:hover {
-      color: var(--red);
-    }
+    .nav-links a:hover { color: var(--red); }
 
     .hero {
       min-height: 100vh;
@@ -80,93 +73,96 @@
       place-items: center;
       position: relative;
       overflow: hidden;
-      background: linear-gradient(90deg, rgba(8, 8, 8, 0.96) 0%, rgba(10, 10, 10, 0.82) 42%, rgba(14, 14, 14, 0.58) 100%);
+      background: #080808;
     }
 
-    .map-preview {
+    .hero-map {
+      position: absolute;
+      inset: -6%;
+      z-index: 0;
+      opacity: 0.86;
+      filter: grayscale(1) contrast(1.45) brightness(0.72);
+      animation: slowZoom 24s ease-in-out infinite alternate;
+      transform-origin: 68% 48%;
+    }
+
+    .hero-map .leaflet-control-container { display: none; }
+
+    .hero-map .leaflet-tile {
+      filter: grayscale(1) contrast(1.55) brightness(0.72) invert(0.04);
+    }
+
+    .heat-overlay {
       position: absolute;
       inset: 0;
-      overflow: hidden;
-      opacity: 0.74;
-    }
-
-    .map-preview::before {
-      content: "";
-      position: absolute;
-      inset: -18% -8% -12% -3%;
+      z-index: 1;
+      pointer-events: none;
       background:
-        linear-gradient(90deg, rgba(255,255,255,0.55) 0 2px, transparent 2px 100%),
-        linear-gradient(0deg, rgba(255,255,255,0.42) 0 2px, transparent 2px 100%),
-        linear-gradient(90deg, rgba(255,255,255,0.18) 0 1px, transparent 1px 100%),
-        linear-gradient(0deg, rgba(255,255,255,0.15) 0 1px, transparent 1px 100%);
-      background-size: 92px 92px, 92px 92px, 23px 23px, 23px 23px;
-      transform: rotate(-8deg) skewX(-8deg) scale(1.08);
-      filter: contrast(1.25) brightness(0.94);
-      mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.12) 14%, rgba(0,0,0,0.9) 52%, rgba(0,0,0,1) 100%);
-    }
-
-    .map-preview::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 72% 49%, rgba(193, 18, 31, 0.82) 0 9%, rgba(193, 18, 31, 0.45) 9% 18%, transparent 19%),
-        radial-gradient(circle at 61% 63%, rgba(193, 18, 31, 0.72) 0 4%, transparent 9%),
-        radial-gradient(circle at 79% 67%, rgba(193, 18, 31, 0.65) 0 5%, transparent 10%),
-        radial-gradient(circle at 55% 43%, rgba(193, 18, 31, 0.62) 0 4%, transparent 9%),
-        radial-gradient(circle at 87% 39%, rgba(193, 18, 31, 0.55) 0 3%, transparent 7%),
-        radial-gradient(circle at 68% 74%, rgba(193, 18, 31, 0.52) 0 3%, transparent 7%);
+        radial-gradient(circle at 72% 48%, rgba(193, 18, 31, 0.75) 0 7%, rgba(193, 18, 31, 0.36) 8% 15%, transparent 16%),
+        radial-gradient(circle at 62% 59%, rgba(193, 18, 31, 0.58) 0 4%, transparent 9%),
+        radial-gradient(circle at 77% 66%, rgba(193, 18, 31, 0.52) 0 4%, transparent 9%),
+        radial-gradient(circle at 55% 43%, rgba(193, 18, 31, 0.46) 0 3%, transparent 7%),
+        radial-gradient(circle at 84% 36%, rgba(193, 18, 31, 0.42) 0 3%, transparent 7%),
+        radial-gradient(circle at 66% 74%, rgba(193, 18, 31, 0.48) 0 3%, transparent 7%);
       mix-blend-mode: screen;
-      filter: blur(0.3px);
-      opacity: 0.82;
-      animation: pulseMap 5.8s ease-in-out infinite;
+      animation: pulseMap 6.2s ease-in-out infinite;
     }
 
-    .road {
+    .coordinate-grid {
       position: absolute;
-      height: 7px;
-      background: rgba(255, 255, 255, 0.88);
-      box-shadow: 0 0 14px rgba(255, 255, 255, 0.16);
-      border-radius: 999px;
-      transform-origin: left center;
-      opacity: 0.62;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+      background-size: 120px 120px;
+      opacity: 0.38;
     }
 
-    .road.one {
-      width: 72vw;
-      left: 11%;
-      top: 42%;
-      transform: rotate(-4deg);
+    .coordinate-grid span {
+      position: absolute;
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      font-weight: 700;
     }
 
-    .road.two {
-      width: 56vw;
-      left: 19%;
-      top: 61%;
-      transform: rotate(11deg);
-    }
+    .coord-a { top: 18%; left: 6%; }
+    .coord-b { top: 34%; right: 7%; }
+    .coord-c { bottom: 18%; left: 44%; }
+    .coord-d { bottom: 10%; right: 10%; }
 
-    .road.three {
-      width: 46vw;
-      left: 40%;
-      top: 27%;
-      transform: rotate(78deg);
-      opacity: 0.5;
+    .grain {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      opacity: 0.16;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.25) 0 1px, transparent 1px),
+        radial-gradient(circle at 80% 30%, rgba(255,255,255,0.18) 0 1px, transparent 1px),
+        radial-gradient(circle at 40% 70%, rgba(255,255,255,0.16) 0 1px, transparent 1px),
+        radial-gradient(circle at 70% 80%, rgba(255,255,255,0.22) 0 1px, transparent 1px);
+      background-size: 7px 7px, 11px 11px, 13px 13px, 17px 17px;
+      mix-blend-mode: screen;
+      animation: grainShift 1.8s steps(2) infinite;
     }
 
     .hero::after {
       content: "";
       position: absolute;
       inset: 0;
+      z-index: 4;
       background:
-        linear-gradient(90deg, rgba(8,8,8,0.98) 0%, rgba(8,8,8,0.84) 32%, rgba(8,8,8,0.28) 68%, rgba(8,8,8,0.72) 100%),
-        linear-gradient(0deg, rgba(8,8,8,1) 0%, transparent 24%, transparent 72%, rgba(8,8,8,0.7) 100%);
+        linear-gradient(90deg, rgba(8,8,8,0.98) 0%, rgba(8,8,8,0.86) 30%, rgba(8,8,8,0.36) 64%, rgba(8,8,8,0.72) 100%),
+        linear-gradient(0deg, rgba(8,8,8,1) 0%, transparent 26%, transparent 72%, rgba(8,8,8,0.78) 100%);
       pointer-events: none;
     }
 
     .hero-content {
       position: relative;
-      z-index: 2;
+      z-index: 5;
       max-width: 1180px;
       width: 100%;
       display: grid;
@@ -183,12 +179,10 @@
       font-size: 0.72rem;
       font-weight: 800;
       margin-bottom: 20px;
-      opacity: 0.86;
+      opacity: 0.9;
     }
 
-    .eyebrow span {
-      color: var(--red);
-    }
+    .eyebrow span { color: var(--red); }
 
     h1 {
       font-family: "Space Grotesk", "Inter", Arial, sans-serif;
@@ -196,7 +190,7 @@
       line-height: 0.84;
       margin: 0 0 26px;
       letter-spacing: -0.08em;
-      max-width: 860px;
+      max-width: 880px;
       text-transform: uppercase;
     }
 
@@ -278,10 +272,7 @@
       border-top: 1px solid var(--line);
     }
 
-    .stat:first-of-type {
-      border-top: 0;
-      padding-top: 0;
-    }
+    .stat:first-of-type { border-top: 0; padding-top: 0; }
 
     .stat-number {
       font-family: "Space Grotesk", "Inter", sans-serif;
@@ -309,10 +300,7 @@
       background: #0b0b0b;
     }
 
-    .section-inner {
-      max-width: 1120px;
-      margin: 0 auto;
-    }
+    .section-inner { max-width: 1120px; margin: 0 auto; }
 
     .section h2 {
       font-family: "Space Grotesk", "Inter", sans-serif;
@@ -357,10 +345,7 @@
       margin-bottom: 18px;
     }
 
-    .card h3 {
-      margin: 0 0 12px;
-      font-size: 1.18rem;
-    }
+    .card h3 { margin: 0 0 12px; font-size: 1.18rem; }
 
     .card p {
       margin: 0;
@@ -379,58 +364,37 @@
     }
 
     @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(18px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes pulseMap {
-      0%, 100% {
-        opacity: 0.72;
-        transform: scale(1);
-      }
-      50% {
-        opacity: 0.92;
-        transform: scale(1.015);
-      }
+      0%, 100% { opacity: 0.76; transform: scale(1); }
+      50% { opacity: 0.96; transform: scale(1.018); }
+    }
+
+    @keyframes slowZoom {
+      from { transform: scale(1.02); }
+      to { transform: scale(1.13); }
+    }
+
+    @keyframes grainShift {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(-1%, 1%); }
+      100% { transform: translate(1%, -1%); }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      * {
-        animation: none !important;
-        scroll-behavior: auto !important;
-      }
+      * { animation: none !important; scroll-behavior: auto !important; }
     }
 
     @media (max-width: 860px) {
-      .hero-content {
-        grid-template-columns: 1fr;
-      }
-
-      .panel {
-        min-height: auto;
-      }
-
-      .cards {
-        grid-template-columns: 1fr;
-      }
-
-      .navbar {
-        position: static;
-      }
-
-      .hero {
-        padding-top: 70px;
-      }
-
-      .map-preview {
-        opacity: 0.45;
-      }
+      .hero-content { grid-template-columns: 1fr; }
+      .panel { min-height: auto; }
+      .cards { grid-template-columns: 1fr; }
+      .navbar { position: static; }
+      .hero { padding-top: 70px; }
+      .hero-map { opacity: 0.44; }
     }
   </style>
 </head>
@@ -449,11 +413,15 @@
 
   <main>
     <section class="hero">
-      <div class="map-preview" aria-hidden="true">
-        <div class="road one"></div>
-        <div class="road two"></div>
-        <div class="road three"></div>
+      <div id="heroMap" class="hero-map" aria-hidden="true"></div>
+      <div class="heat-overlay" aria-hidden="true"></div>
+      <div class="coordinate-grid" aria-hidden="true">
+        <span class="coord-a">32.94°S · 60.72°W</span>
+        <span class="coord-b">PARANÁ RIVER AXIS</span>
+        <span class="coord-c">ROSARIO URBAN GRID</span>
+        <span class="coord-d">32.98°S · 60.63°W</span>
       </div>
+      <div class="grain" aria-hidden="true"></div>
 
       <div class="hero-content">
         <div>
@@ -525,5 +493,26 @@
   <footer>
     Mapping Criminal Violence in Rosario · Personal research portfolio project
   </footer>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    var heroMap = L.map("heroMap", {
+      center: [-32.948, -60.655],
+      zoom: 13,
+      zoomControl: false,
+      attributionControl: false,
+      dragging: false,
+      scrollWheelZoom: false,
+      doubleClickZoom: false,
+      boxZoom: false,
+      keyboard: false,
+      tap: false,
+      touchZoom: false
+    });
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19
+    }).addTo(heroMap);
+  </script>
 </body>
 </html>
