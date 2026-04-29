@@ -22,22 +22,22 @@
     }
 
     * { box-sizing: border-box; }
-
     html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
       font-family: "Inter", Arial, Helvetica, sans-serif;
-      background: var(--black);
+      background: radial-gradient(circle at 70% 12%, rgba(193,18,31,0.18), transparent 26%), #080808;
       color: var(--white);
+      overflow-x: hidden;
     }
 
     .navbar {
       position: fixed;
       top: 0;
       width: 100%;
-      background: rgba(8, 8, 8, 0.76);
-      backdrop-filter: blur(16px);
+      background: rgba(8, 8, 8, 0.72);
+      backdrop-filter: blur(18px);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -73,80 +73,26 @@
       place-items: center;
       position: relative;
       overflow: hidden;
-      background: #080808;
+      background:
+        radial-gradient(circle at 72% 44%, rgba(193,18,31,0.18), transparent 28%),
+        linear-gradient(180deg, #080808 0%, #0b0b0b 100%);
+      perspective: 1400px;
     }
 
-    .hero-map {
-      position: absolute;
-      inset: -6%;
-      z-index: 0;
-      opacity: 0.86;
-      filter: grayscale(1) contrast(1.45) brightness(0.72);
-      animation: slowZoom 24s ease-in-out infinite alternate;
-      transform-origin: 68% 48%;
-    }
-
-    .hero-map .leaflet-control-container { display: none; }
-
-    .hero-map .leaflet-tile {
-      filter: grayscale(1) contrast(1.55) brightness(0.72) invert(0.04);
-    }
-
-    .heat-overlay {
+    .hero::before {
+      content: "";
       position: absolute;
       inset: 0;
       z-index: 1;
       pointer-events: none;
       background:
-        radial-gradient(circle at 72% 48%, rgba(193, 18, 31, 0.75) 0 7%, rgba(193, 18, 31, 0.36) 8% 15%, transparent 16%),
-        radial-gradient(circle at 62% 59%, rgba(193, 18, 31, 0.58) 0 4%, transparent 9%),
-        radial-gradient(circle at 77% 66%, rgba(193, 18, 31, 0.52) 0 4%, transparent 9%),
-        radial-gradient(circle at 55% 43%, rgba(193, 18, 31, 0.46) 0 3%, transparent 7%),
-        radial-gradient(circle at 84% 36%, rgba(193, 18, 31, 0.42) 0 3%, transparent 7%),
-        radial-gradient(circle at 66% 74%, rgba(193, 18, 31, 0.48) 0 3%, transparent 7%);
-      mix-blend-mode: screen;
-      animation: pulseMap 6.2s ease-in-out infinite;
-    }
-
-    .coordinate-grid {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      pointer-events: none;
-      background:
-        linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+        linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,0.06) 1px, transparent 1px);
       background-size: 120px 120px;
-      opacity: 0.38;
-    }
-
-    .coordinate-grid span {
-      position: absolute;
-      color: rgba(255, 255, 255, 0.45);
-      font-size: 0.68rem;
-      letter-spacing: 0.14em;
-      font-weight: 700;
-    }
-
-    .coord-a { top: 18%; left: 6%; }
-    .coord-b { top: 34%; right: 7%; }
-    .coord-c { bottom: 18%; left: 44%; }
-    .coord-d { bottom: 10%; right: 10%; }
-
-    .grain {
-      position: absolute;
-      inset: 0;
-      z-index: 3;
-      pointer-events: none;
-      opacity: 0.16;
-      background-image:
-        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.25) 0 1px, transparent 1px),
-        radial-gradient(circle at 80% 30%, rgba(255,255,255,0.18) 0 1px, transparent 1px),
-        radial-gradient(circle at 40% 70%, rgba(255,255,255,0.16) 0 1px, transparent 1px),
-        radial-gradient(circle at 70% 80%, rgba(255,255,255,0.22) 0 1px, transparent 1px);
-      background-size: 7px 7px, 11px 11px, 13px 13px, 17px 17px;
-      mix-blend-mode: screen;
-      animation: grainShift 1.8s steps(2) infinite;
+      opacity: 0.28;
+      transform: rotateX(62deg) translateY(18vh) scale(1.35);
+      transform-origin: center bottom;
+      mask-image: linear-gradient(180deg, transparent 0%, black 36%, transparent 100%);
     }
 
     .hero::after {
@@ -155,21 +101,116 @@
       inset: 0;
       z-index: 4;
       background:
-        linear-gradient(90deg, rgba(8,8,8,0.98) 0%, rgba(8,8,8,0.86) 30%, rgba(8,8,8,0.36) 64%, rgba(8,8,8,0.72) 100%),
-        linear-gradient(0deg, rgba(8,8,8,1) 0%, transparent 26%, transparent 72%, rgba(8,8,8,0.78) 100%);
+        linear-gradient(90deg, rgba(8,8,8,0.98) 0%, rgba(8,8,8,0.84) 34%, rgba(8,8,8,0.34) 68%, rgba(8,8,8,0.7) 100%),
+        linear-gradient(0deg, rgba(8,8,8,1) 0%, transparent 28%, transparent 72%, rgba(8,8,8,0.76) 100%);
       pointer-events: none;
+    }
+
+    .hero-map-wrap {
+      position: absolute;
+      right: -8vw;
+      top: 12vh;
+      width: min(58vw, 820px);
+      height: min(62vh, 620px);
+      z-index: 2;
+      transform: rotateX(58deg) rotateZ(-13deg) translateZ(-60px);
+      transform-style: preserve-3d;
+      filter: drop-shadow(0 55px 80px rgba(0,0,0,0.72));
+      animation: mapFloat 9s ease-in-out infinite;
+    }
+
+    .hero-map-wrap::before,
+    .hero-map-wrap::after {
+      content: "";
+      position: absolute;
+      inset: -18px;
+      border: 1px solid rgba(255,255,255,0.14);
+      transform: translateZ(-42px);
+      box-shadow: 0 0 70px rgba(193,18,31,0.16);
+    }
+
+    .hero-map-wrap::after {
+      inset: -36px;
+      opacity: 0.35;
+      transform: translateZ(-86px);
+    }
+
+    .hero-map {
+      position: absolute;
+      inset: 0;
+      opacity: 0.94;
+      filter: grayscale(1) contrast(1.5) brightness(0.74);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: #111;
+      box-shadow:
+        inset 0 0 80px rgba(0,0,0,0.65),
+        0 0 110px rgba(193,18,31,0.18);
+    }
+
+    .hero-map .leaflet-control-container { display: none; }
+    .hero-map .leaflet-tile { filter: grayscale(1) contrast(1.55) brightness(0.7) invert(0.04); }
+
+    .heat-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 72% 48%, rgba(193, 18, 31, 0.75) 0 7%, rgba(193, 18, 31, 0.36) 8% 15%, transparent 16%),
+        radial-gradient(circle at 62% 59%, rgba(193, 18, 31, 0.58) 0 4%, transparent 9%),
+        radial-gradient(circle at 77% 66%, rgba(193, 18, 31, 0.52) 0 4%, transparent 9%),
+        radial-gradient(circle at 55% 43%, rgba(193, 18, 31, 0.46) 0 3%, transparent 7%),
+        radial-gradient(circle at 84% 36%, rgba(193, 18, 31, 0.42) 0 3%, transparent 7%);
+      mix-blend-mode: screen;
+      animation: pulseMap 6.2s ease-in-out infinite;
+    }
+
+    .floating-pin {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--red);
+      box-shadow: 0 0 0 8px rgba(193,18,31,0.12), 0 0 34px rgba(193,18,31,0.75);
+      z-index: 4;
+      animation: pinPulse 2.8s ease-in-out infinite;
+    }
+
+    .pin-a { top: 42%; left: 64%; }
+    .pin-b { top: 58%; left: 52%; animation-delay: 0.7s; }
+    .pin-c { top: 36%; left: 76%; animation-delay: 1.2s; }
+
+    .grain {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+      opacity: 0.12;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.25) 0 1px, transparent 1px),
+        radial-gradient(circle at 80% 30%, rgba(255,255,255,0.18) 0 1px, transparent 1px),
+        radial-gradient(circle at 40% 70%, rgba(255,255,255,0.16) 0 1px, transparent 1px);
+      background-size: 7px 7px, 11px 11px, 17px 17px;
+      mix-blend-mode: screen;
+      animation: grainShift 1.8s steps(2) infinite;
     }
 
     .hero-content {
       position: relative;
-      z-index: 5;
+      z-index: 6;
       max-width: 1180px;
       width: 100%;
       display: grid;
-      grid-template-columns: 1.18fr 0.82fr;
+      grid-template-columns: 1.16fr 0.84fr;
       gap: 48px;
       align-items: center;
+      transform-style: preserve-3d;
       animation: fadeUp 0.9s ease both;
+    }
+
+    .hero-copy {
+      transform: translateZ(72px);
     }
 
     .eyebrow {
@@ -192,11 +233,13 @@
       letter-spacing: -0.08em;
       max-width: 880px;
       text-transform: uppercase;
+      text-shadow: 0 28px 50px rgba(0,0,0,0.62);
     }
 
     .title-accent {
       color: transparent;
       -webkit-text-stroke: 1.2px rgba(255, 255, 255, 0.88);
+      text-shadow: none;
     }
 
     .subtitle {
@@ -231,43 +274,58 @@
       text-decoration: none;
       font-weight: 800;
       font-size: 0.9rem;
-      transition: transform 0.2s ease, background 0.2s ease, border 0.2s ease;
+      transition: transform 0.2s ease, background 0.2s ease, border 0.2s ease, box-shadow 0.2s ease;
     }
 
     .btn-primary {
-      background: var(--red);
+      background: linear-gradient(180deg, #d51a28, var(--red-dark));
       color: var(--white);
-      box-shadow: 0 10px 30px rgba(193, 18, 31, 0.26);
+      box-shadow: 0 14px 30px rgba(193, 18, 31, 0.34), inset 0 1px 0 rgba(255,255,255,0.25);
     }
 
     .btn-primary:hover {
-      background: var(--red-dark);
-      transform: translateY(-2px);
+      transform: translateY(-3px) translateZ(20px);
+      box-shadow: 0 20px 42px rgba(193, 18, 31, 0.42), inset 0 1px 0 rgba(255,255,255,0.25);
     }
 
     .btn-secondary {
       border: 1px solid rgba(255,255,255,0.22);
       color: var(--white);
-      background: rgba(255, 255, 255, 0.055);
+      background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.035));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 12px 28px rgba(0,0,0,0.25);
     }
 
     .btn-secondary:hover {
       border-color: var(--red);
-      transform: translateY(-2px);
+      transform: translateY(-3px) translateZ(20px);
     }
 
     .panel {
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(13, 13, 13, 0.66);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.48);
-      padding: 26px;
-      min-height: 390px;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: linear-gradient(145deg, rgba(25,25,25,0.82), rgba(9,9,9,0.72));
+      backdrop-filter: blur(14px);
+      box-shadow:
+        0 42px 90px rgba(0, 0, 0, 0.58),
+        0 0 80px rgba(193,18,31,0.12),
+        inset 0 1px 0 rgba(255,255,255,0.12);
+      padding: 28px;
+      min-height: 410px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      animation: fadeUp 1.05s ease both;
-      animation-delay: 0.12s;
+      transform: rotateY(-9deg) rotateX(4deg) translateZ(88px);
+      transform-style: preserve-3d;
+      animation: panelFloat 7.5s ease-in-out infinite;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 14px -14px -14px 14px;
+      border: 1px solid rgba(193,18,31,0.24);
+      transform: translateZ(-40px);
+      z-index: -1;
     }
 
     .panel-label {
@@ -281,13 +339,14 @@
     .stat {
       padding: 18px 0;
       border-top: 1px solid var(--line);
+      transform: translateZ(28px);
     }
 
     .stat:first-of-type { border-top: 0; padding-top: 0; }
 
     .stat-number {
       font-family: "Space Grotesk", "Inter", sans-serif;
-      font-size: 2.1rem;
+      font-size: 2.14rem;
       line-height: 1;
       font-weight: 700;
     }
@@ -306,9 +365,12 @@
     }
 
     .section {
-      padding: 82px 30px;
+      padding: 92px 30px;
       border-top: 1px solid var(--line);
-      background: #0b0b0b;
+      background:
+        radial-gradient(circle at 14% 10%, rgba(193,18,31,0.11), transparent 24%),
+        #0b0b0b;
+      perspective: 1200px;
     }
 
     .section-inner { max-width: 1120px; margin: 0 auto; }
@@ -332,22 +394,41 @@
     .cards {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-      margin-top: 36px;
+      gap: 22px;
+      margin-top: 42px;
+      transform-style: preserve-3d;
     }
 
     .card {
-      border: 1px solid var(--line);
-      background: linear-gradient(180deg, #121212, #0f0f0f);
-      padding: 24px;
-      min-height: 190px;
-      transition: transform 0.22s ease, border-color 0.22s ease;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: linear-gradient(145deg, rgba(27,27,27,0.92), rgba(10,10,10,0.94));
+      padding: 26px;
+      min-height: 205px;
+      box-shadow: 0 26px 60px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.08);
+      transform: rotateX(0deg) translateZ(0);
+      transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+      overflow: hidden;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 84% 16%, rgba(193,18,31,0.18), transparent 34%);
+      opacity: 0;
+      transition: opacity 0.28s ease;
     }
 
     .card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(193, 18, 31, 0.62);
+      transform: translateY(-10px) rotateX(5deg) translateZ(38px);
+      border-color: rgba(193, 18, 31, 0.68);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.55), 0 0 55px rgba(193,18,31,0.15);
     }
+
+    .card:hover::after { opacity: 1; }
+
+    .card > * { position: relative; z-index: 1; }
 
     .card-number {
       color: var(--red);
@@ -384,9 +465,19 @@
       50% { opacity: 0.96; transform: scale(1.018); }
     }
 
-    @keyframes slowZoom {
-      from { transform: scale(1.02); }
-      to { transform: scale(1.13); }
+    @keyframes mapFloat {
+      0%, 100% { transform: rotateX(58deg) rotateZ(-13deg) translateZ(-60px) translateY(0); }
+      50% { transform: rotateX(58deg) rotateZ(-13deg) translateZ(-32px) translateY(-14px); }
+    }
+
+    @keyframes panelFloat {
+      0%, 100% { transform: rotateY(-9deg) rotateX(4deg) translateZ(88px) translateY(0); }
+      50% { transform: rotateY(-7deg) rotateX(5deg) translateZ(108px) translateY(-10px); }
+    }
+
+    @keyframes pinPulse {
+      0%, 100% { transform: translateZ(42px) scale(1); opacity: 0.74; }
+      50% { transform: translateZ(72px) scale(1.28); opacity: 1; }
     }
 
     @keyframes grainShift {
@@ -399,13 +490,23 @@
       * { animation: none !important; scroll-behavior: auto !important; }
     }
 
-    @media (max-width: 860px) {
+    @media (max-width: 980px) {
       .hero-content { grid-template-columns: 1fr; }
-      .panel { min-height: auto; }
+      .hero-map-wrap {
+        right: -18vw;
+        top: 8vh;
+        width: 82vw;
+        height: 52vh;
+        opacity: 0.5;
+      }
+      .panel {
+        min-height: auto;
+        transform: none;
+        animation: none;
+      }
       .cards { grid-template-columns: 1fr; }
       .navbar { position: static; }
       .hero { padding-top: 70px; }
-      .hero-map { opacity: 0.44; }
     }
   </style>
 </head>
@@ -418,24 +519,24 @@
       <li><a href="data.html">Data</a></li>
       <li><a href="methodology.html">Methodology</a></li>
       <li><a href="rosario.html">Rosario Analysis</a></li>
+      <li><a href="thesis.html">Thesis</a></li>
       <li><a href="about.html">Research Profile</a></li>
     </ul>
   </nav>
 
   <main>
     <section class="hero">
-      <div id="heroMap" class="hero-map" aria-hidden="true"></div>
-      <div class="heat-overlay" aria-hidden="true"></div>
-      <div class="coordinate-grid" aria-hidden="true">
-        <span class="coord-a">32.94°S · 60.72°W</span>
-        <span class="coord-b">PARANÁ RIVER AXIS</span>
-        <span class="coord-c">ROSARIO URBAN GRID</span>
-        <span class="coord-d">32.98°S · 60.63°W</span>
+      <div class="hero-map-wrap" aria-hidden="true">
+        <div id="heroMap" class="hero-map"></div>
+        <div class="heat-overlay"></div>
+        <span class="floating-pin pin-a"></span>
+        <span class="floating-pin pin-b"></span>
+        <span class="floating-pin pin-c"></span>
       </div>
       <div class="grain" aria-hidden="true"></div>
 
       <div class="hero-content">
-        <div>
+        <div class="hero-copy">
           <div class="eyebrow"><span>Personal research project</span> · Fieldwork · UCDP-style data</div>
           <h1>Mapping Criminal <span class="title-accent">Violence</span> in Rosario</h1>
           <p class="subtitle">
@@ -444,6 +545,7 @@
           <div class="research-line"><span>Master’s thesis</span> · Field research in Argentina · UCDP Research Assistant</div>
           <div class="cta-row">
             <a href="map.html" class="btn btn-primary">Explore the map</a>
+            <a href="thesis.html" class="btn btn-secondary">Read thesis</a>
             <a href="about.html" class="btn btn-secondary">Research profile</a>
           </div>
           <div class="scroll-note">A personal project connecting thesis fieldwork, conflict-data methods and geospatial analysis.</div>
