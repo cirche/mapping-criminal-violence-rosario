@@ -37,7 +37,8 @@ button {
   cursor: pointer;
 }
 
-.active {
+/* FIX: scope active only to buttons */
+.controls button.active {
   background: #c1121f;
   border-color: #c1121f;
 }
