@@ -106,10 +106,10 @@ a { color: inherit; }
 .page-hero {
   position: relative;
   overflow: hidden;
-  min-height: 54vh;
+  min-height: 74vh;
   display: flex;
   align-items: end;
-  padding: 96px 30px 64px;
+  padding: 118px 30px 76px;
   border-bottom: 1px solid var(--line);
   background:
     linear-gradient(90deg, rgba(8,8,8,0.98) 0%, rgba(8,8,8,0.84) 42%, rgba(8,8,8,0.46) 100%),
@@ -147,7 +147,7 @@ a { color: inherit; }
 .page-hero-inner,
 .section-inner {
   position: relative;
-  max-width: 1120px;
+  max-width: 1180px;
   margin: 0 auto;
   width: 100%;
 }
@@ -156,9 +156,9 @@ a { color: inherit; }
   color: var(--paper);
   text-transform: uppercase;
   letter-spacing: 0.28em;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 900;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
   opacity: 0.94;
 }
 
@@ -172,27 +172,27 @@ h3 {
 }
 
 h1 {
-  font-size: clamp(4.2rem, 10.2vw, 9.4rem);
-  line-height: 0.79;
-  margin: 0 0 24px;
-  letter-spacing: -0.095em;
+  font-size: clamp(4.9rem, 12.6vw, 11.4rem);
+  line-height: 0.78;
+  margin: 0 0 28px;
+  letter-spacing: -0.105em;
   font-weight: 700;
-  max-width: 1080px;
+  max-width: 1160px;
 }
 
 h1 .outline,
 h2 .outline {
   color: transparent;
-  -webkit-text-stroke: 1.2px rgba(255, 255, 255, 0.82);
+  -webkit-text-stroke: 1.25px rgba(255, 255, 255, 0.86);
 }
 
 h2 {
-  font-size: clamp(2.3rem, 5vw, 4.8rem);
-  line-height: 0.88;
-  letter-spacing: -0.078em;
+  font-size: clamp(2.5rem, 5.8vw, 5.5rem);
+  line-height: 0.86;
+  letter-spacing: -0.088em;
   font-weight: 700;
-  margin: 0 0 22px;
-  max-width: 900px;
+  margin: 0 0 24px;
+  max-width: 980px;
 }
 
 h3 {
@@ -381,15 +381,16 @@ footer {
 
   .page-hero {
     min-height: auto;
-    padding-top: 70px;
+    padding-top: 78px;
   }
 
   h1 {
-    font-size: clamp(3.2rem, 17vw, 5.2rem);
+    font-size: clamp(3.8rem, 20vw, 6.4rem);
+    letter-spacing: -0.105em;
   }
 
   h2 {
-    font-size: clamp(2.2rem, 12vw, 3.6rem);
+    font-size: clamp(2.4rem, 13vw, 3.9rem);
   }
 
   .navbar {
