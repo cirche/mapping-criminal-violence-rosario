@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <rect width="1600" height="900" fill="#030303"/>
+  <defs>
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="table" tableValues="0 0.18"/></feComponentTransfer>
+    </filter>
+    <filter id="glow"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <linearGradient id="fade" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.95"/><stop offset="0.68" stop-color="#fff" stop-opacity="0.72"/><stop offset="1" stop-color="#fff" stop-opacity="0.12"/></linearGradient>
+    <radialGradient id="redField" cx="70%" cy="53%" r="38%"><stop offset="0" stop-color="#c1121f" stop-opacity="0.62"/><stop offset="0.52" stop-color="#c1121f" stop-opacity="0.28"/><stop offset="1" stop-color="#c1121f" stop-opacity="0"/></radialGradient>
+  </defs>
+
+  <rect width="1600" height="900" filter="url(#noise)" opacity="0.7"/>
+  <rect width="1600" height="900" fill="url(#redField)"/>
+
+  <g opacity="0.78" stroke="url(#fade)" stroke-width="2.1" fill="none" filter="url(#glow)">
+    <!-- primary roads -->
+    <path d="M40 355 C260 345 410 355 570 330 S860 255 1070 250 S1360 310 1580 290" stroke-width="7" opacity="0.9"/>
+    <path d="M410 880 C520 720 585 600 645 450 S730 190 850 20" stroke-width="6" opacity="0.86"/>
+    <path d="M0 615 C230 560 420 510 610 520 S880 665 1110 690 S1390 590 1600 565" stroke-width="5" opacity="0.75"/>
+    <path d="M280 70 C420 180 535 250 650 300 S880 385 1040 520 S1240 760 1380 900" stroke-width="4" opacity="0.6"/>
+  </g>
+
+  <!-- urban grid left/centre -->
+  <g stroke="#ffffff" stroke-width="1.05" opacity="0.55" fill="none">
+    <g transform="rotate(-1 700 430)">
+      <path d="M120 80 H1030 M110 120 H1060 M100 160 H1080 M90 200 H1100 M80 240 H1120 M70 280 H1140 M60 320 H1160 M50 360 H1180 M45 400 H1200 M40 440 H1220 M35 480 H1240 M30 520 H1260 M25 560 H1280 M20 600 H1300 M15 640 H1320 M10 680 H1340 M5 720 H1360"/>
+      <path d="M130 70 V740 M175 65 V745 M220 60 V750 M265 58 V755 M310 55 V760 M355 52 V765 M400 50 V770 M445 48 V775 M490 45 V780 M535 45 V785 M580 42 V790 M625 40 V795 M670 38 V800 M715 35 V805 M760 35 V810 M805 32 V815 M850 30 V820 M895 30 V825 M940 28 V830 M985 25 V835 M1030 25 V840 M1075 22 V845 M1120 20 V850 M1165 20 V855 M1210 18 V860"/>
+    </g>
+  </g>
+
+  <!-- dense red city layer -->
+  <g stroke="#c1121f" stroke-width="1.25" opacity="0.62" fill="none">
+    <g transform="translate(735 185) rotate(2)">
+      <path d="M0 0 H530 M0 25 H545 M0 50 H565 M0 75 H570 M0 100 H585 M0 125 H590 M0 150 H600 M0 175 H610 M0 200 H605 M0 225 H595 M0 250 H580 M0 275 H560 M0 300 H545 M0 325 H520 M0 350 H490 M0 375 H455 M0 400 H420"/>
+      <path d="M0 0 V405 M25 0 V420 M50 0 V432 M75 0 V442 M100 0 V452 M125 0 V460 M150 0 V468 M175 0 V472 M200 0 V475 M225 0 V478 M250 0 V480 M275 0 V477 M300 0 V472 M325 0 V466 M350 0 V456 M375 0 V442 M400 0 V425 M425 0 V405 M450 0 V380 M475 10 V350 M500 20 V320 M525 35 V285 M550 55 V245 M575 80 V205"/>
+    </g>
+  </g>
+
+  <!-- river / dark edge -->
+  <path d="M1110 0 C1060 115 1115 210 1215 280 C1335 365 1355 510 1300 640 C1240 775 1290 840 1415 900 L1600 900 L1600 0 Z" fill="#000" opacity="0.72"/>
+  <path d="M1130 0 C1085 110 1135 205 1230 275 C1350 365 1368 505 1320 635 C1275 755 1312 845 1430 900" stroke="#ffffff" stroke-opacity="0.27" stroke-width="4" fill="none"/>
+
+  <!-- red stains / hotspots -->
+  <g fill="#c1121f" opacity="0.72" filter="url(#glow)">
+    <circle cx="965" cy="410" r="85" opacity="0.33"/>
+    <circle cx="1115" cy="515" r="118" opacity="0.28"/>
+    <circle cx="850" cy="565" r="42" opacity="0.42"/>
+    <circle cx="760" cy="340" r="34" opacity="0.45"/>
+    <circle cx="1050" cy="270" r="22" opacity="0.55"/>
+    <circle cx="1225" cy="470" r="26" opacity="0.45"/>
+    <circle cx="1320" cy="650" r="18" opacity="0.52"/>
+    <circle cx="610" cy="445" r="20" opacity="0.5"/>
+    <circle cx="705" cy="610" r="26" opacity="0.42"/>
+    <circle cx="515" cy="250" r="13" opacity="0.48"/>
+    <circle cx="910" cy="710" r="18" opacity="0.5"/>
+    <circle cx="1180" cy="180" r="11" opacity="0.62"/>
+    <circle cx="1390" cy="390" r="9" opacity="0.55"/>
+    <circle cx="1480" cy="590" r="14" opacity="0.5"/>
+  </g>
+
+  <rect width="1600" height="900" fill="url(#fade)" opacity="0.04"/>
+</svg>
