@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
   <style>
     :root {
@@ -18,7 +17,7 @@
       --white: #ffffff;
       --red: #c1121f;
       --red-dark: #8f0d17;
-      --line: rgba(255, 255, 255, 0.14);
+      --line: rgba(255,255,255,0.14);
     }
 
     * { box-sizing: border-box; }
@@ -26,8 +25,8 @@
 
     body {
       margin: 0;
-      font-family: "Inter", Arial, Helvetica, sans-serif;
-      background: radial-gradient(circle at 70% 12%, rgba(193,18,31,0.18), transparent 26%), #080808;
+      font-family: "Inter", Arial, sans-serif;
+      background: #080808;
       color: var(--white);
       overflow-x: hidden;
     }
@@ -36,13 +35,12 @@
       position: fixed;
       top: 0;
       width: 100%;
-      background: rgba(8, 8, 8, 0.72);
-      backdrop-filter: blur(18px);
+      z-index: 1000;
       display: flex;
       justify-content: center;
-      align-items: center;
       padding: 16px 32px;
-      z-index: 1000;
+      background: rgba(8,8,8,0.76);
+      backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--line);
     }
 
@@ -60,7 +58,6 @@
       color: #e0e0e0;
       text-decoration: none;
       font-size: 0.84rem;
-      letter-spacing: 0.02em;
       transition: color 0.2s ease;
     }
 
@@ -69,30 +66,29 @@
     .hero {
       min-height: 100vh;
       padding: 118px 30px 72px;
-      display: grid;
-      place-items: center;
       position: relative;
       overflow: hidden;
+      display: grid;
+      place-items: center;
       background:
-        radial-gradient(circle at 72% 44%, rgba(193,18,31,0.18), transparent 28%),
-        linear-gradient(180deg, #080808 0%, #0b0b0b 100%);
-      perspective: 1400px;
+        radial-gradient(circle at 72% 32%, rgba(193,18,31,0.34), transparent 28%),
+        radial-gradient(circle at 12% 82%, rgba(255,255,255,0.07), transparent 28%),
+        #080808;
+      perspective: 1200px;
     }
 
     .hero::before {
       content: "";
       position: absolute;
       inset: 0;
-      z-index: 1;
-      pointer-events: none;
       background:
-        linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(255,255,255,0.06) 1px, transparent 1px);
-      background-size: 120px 120px;
-      opacity: 0.28;
-      transform: rotateX(62deg) translateY(18vh) scale(1.35);
+        linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+      background-size: 95px 95px;
+      transform: rotateX(67deg) translateY(22vh) scale(1.5);
       transform-origin: center bottom;
-      mask-image: linear-gradient(180deg, transparent 0%, black 36%, transparent 100%);
+      opacity: 0.36;
+      z-index: 0;
     }
 
     .hero::after {
@@ -100,117 +96,27 @@
       position: absolute;
       inset: 0;
       z-index: 4;
-      background:
-        linear-gradient(90deg, rgba(8,8,8,0.98) 0%, rgba(8,8,8,0.84) 34%, rgba(8,8,8,0.34) 68%, rgba(8,8,8,0.7) 100%),
-        linear-gradient(0deg, rgba(8,8,8,1) 0%, transparent 28%, transparent 72%, rgba(8,8,8,0.76) 100%);
-      pointer-events: none;
-    }
-
-    .hero-map-wrap {
-      position: absolute;
-      right: -8vw;
-      top: 12vh;
-      width: min(58vw, 820px);
-      height: min(62vh, 620px);
-      z-index: 2;
-      transform: rotateX(58deg) rotateZ(-13deg) translateZ(-60px);
-      transform-style: preserve-3d;
-      filter: drop-shadow(0 55px 80px rgba(0,0,0,0.72));
-      animation: mapFloat 9s ease-in-out infinite;
-    }
-
-    .hero-map-wrap::before,
-    .hero-map-wrap::after {
-      content: "";
-      position: absolute;
-      inset: -18px;
-      border: 1px solid rgba(255,255,255,0.14);
-      transform: translateZ(-42px);
-      box-shadow: 0 0 70px rgba(193,18,31,0.16);
-    }
-
-    .hero-map-wrap::after {
-      inset: -36px;
-      opacity: 0.35;
-      transform: translateZ(-86px);
-    }
-
-    .hero-map {
-      position: absolute;
-      inset: 0;
-      opacity: 0.94;
-      filter: grayscale(1) contrast(1.5) brightness(0.74);
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: #111;
-      box-shadow:
-        inset 0 0 80px rgba(0,0,0,0.65),
-        0 0 110px rgba(193,18,31,0.18);
-    }
-
-    .hero-map .leaflet-control-container { display: none; }
-    .hero-map .leaflet-tile { filter: grayscale(1) contrast(1.55) brightness(0.7) invert(0.04); }
-
-    .heat-overlay {
-      position: absolute;
-      inset: 0;
-      z-index: 3;
       pointer-events: none;
       background:
-        radial-gradient(circle at 72% 48%, rgba(193, 18, 31, 0.75) 0 7%, rgba(193, 18, 31, 0.36) 8% 15%, transparent 16%),
-        radial-gradient(circle at 62% 59%, rgba(193, 18, 31, 0.58) 0 4%, transparent 9%),
-        radial-gradient(circle at 77% 66%, rgba(193, 18, 31, 0.52) 0 4%, transparent 9%),
-        radial-gradient(circle at 55% 43%, rgba(193, 18, 31, 0.46) 0 3%, transparent 7%),
-        radial-gradient(circle at 84% 36%, rgba(193, 18, 31, 0.42) 0 3%, transparent 7%);
-      mix-blend-mode: screen;
-      animation: pulseMap 6.2s ease-in-out infinite;
-    }
-
-    .floating-pin {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: var(--red);
-      box-shadow: 0 0 0 8px rgba(193,18,31,0.12), 0 0 34px rgba(193,18,31,0.75);
-      z-index: 4;
-      animation: pinPulse 2.8s ease-in-out infinite;
-    }
-
-    .pin-a { top: 42%; left: 64%; }
-    .pin-b { top: 58%; left: 52%; animation-delay: 0.7s; }
-    .pin-c { top: 36%; left: 76%; animation-delay: 1.2s; }
-
-    .grain {
-      position: absolute;
-      inset: 0;
-      z-index: 5;
-      pointer-events: none;
-      opacity: 0.12;
-      background-image:
-        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.25) 0 1px, transparent 1px),
-        radial-gradient(circle at 80% 30%, rgba(255,255,255,0.18) 0 1px, transparent 1px),
-        radial-gradient(circle at 40% 70%, rgba(255,255,255,0.16) 0 1px, transparent 1px);
-      background-size: 7px 7px, 11px 11px, 17px 17px;
-      mix-blend-mode: screen;
-      animation: grainShift 1.8s steps(2) infinite;
+        linear-gradient(90deg, rgba(8,8,8,0.96) 0%, rgba(8,8,8,0.86) 34%, rgba(8,8,8,0.28) 67%, rgba(8,8,8,0.72) 100%),
+        linear-gradient(0deg, rgba(8,8,8,1) 0%, transparent 32%, rgba(8,8,8,0.32) 100%);
     }
 
     .hero-content {
-      position: relative;
-      z-index: 6;
-      max-width: 1180px;
       width: 100%;
+      max-width: 1180px;
+      position: relative;
+      z-index: 8;
       display: grid;
-      grid-template-columns: 1.16fr 0.84fr;
+      grid-template-columns: 1.05fr 0.95fr;
       gap: 48px;
       align-items: center;
       transform-style: preserve-3d;
-      animation: fadeUp 0.9s ease both;
     }
 
     .hero-copy {
-      transform: translateZ(72px);
+      transform: translateZ(120px);
+      text-shadow: 0 30px 60px rgba(0,0,0,0.7);
     }
 
     .eyebrow {
@@ -220,26 +126,23 @@
       font-size: 0.72rem;
       font-weight: 800;
       margin-bottom: 20px;
-      opacity: 0.9;
     }
 
     .eyebrow span { color: var(--red); }
 
     h1 {
-      font-family: "Space Grotesk", "Inter", Arial, sans-serif;
+      font-family: "Space Grotesk", "Inter", sans-serif;
       font-size: clamp(3.4rem, 8vw, 7.9rem);
       line-height: 0.84;
       margin: 0 0 26px;
       letter-spacing: -0.08em;
-      max-width: 880px;
       text-transform: uppercase;
-      text-shadow: 0 28px 50px rgba(0,0,0,0.62);
+      max-width: 880px;
     }
 
     .title-accent {
       color: transparent;
-      -webkit-text-stroke: 1.2px rgba(255, 255, 255, 0.88);
-      text-shadow: none;
+      -webkit-text-stroke: 1.2px rgba(255,255,255,0.88);
     }
 
     .subtitle {
@@ -274,62 +177,100 @@
       text-decoration: none;
       font-weight: 800;
       font-size: 0.9rem;
-      transition: transform 0.2s ease, background 0.2s ease, border 0.2s ease, box-shadow 0.2s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease;
     }
 
     .btn-primary {
-      background: linear-gradient(180deg, #d51a28, var(--red-dark));
+      background: linear-gradient(180deg, #d51a28, #8f0d17);
       color: var(--white);
-      box-shadow: 0 14px 30px rgba(193, 18, 31, 0.34), inset 0 1px 0 rgba(255,255,255,0.25);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-3px) translateZ(20px);
-      box-shadow: 0 20px 42px rgba(193, 18, 31, 0.42), inset 0 1px 0 rgba(255,255,255,0.25);
+      box-shadow: 0 18px 38px rgba(193,18,31,0.38), inset 0 1px 0 rgba(255,255,255,0.25);
     }
 
     .btn-secondary {
-      border: 1px solid rgba(255,255,255,0.22);
+      border: 1px solid rgba(255,255,255,0.24);
       color: var(--white);
-      background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.035));
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 12px 28px rgba(0,0,0,0.25);
+      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.035));
+      box-shadow: 0 14px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.12);
     }
 
-    .btn-secondary:hover {
-      border-color: var(--red);
-      transform: translateY(-3px) translateZ(20px);
+    .btn:hover { transform: translateY(-4px); }
+
+    .scroll-note {
+      margin-top: 28px;
+      color: #aaa;
+      font-size: 0.86rem;
     }
 
-    .panel {
+    .visual-3d {
       position: relative;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: linear-gradient(145deg, rgba(25,25,25,0.82), rgba(9,9,9,0.72));
+      height: 560px;
+      transform-style: preserve-3d;
+      transform: rotateY(-18deg) rotateX(10deg);
+      animation: sceneFloat 8s ease-in-out infinite;
+    }
+
+    .map-plane {
+      position: absolute;
+      inset: 82px 10px 54px 10px;
+      transform: rotateX(62deg) rotateZ(-10deg) translateZ(-120px);
+      transform-origin: center;
+      border: 1px solid rgba(255,255,255,0.22);
+      background:
+        radial-gradient(circle at 65% 45%, rgba(193,18,31,0.72) 0 5%, rgba(193,18,31,0.24) 6% 16%, transparent 18%),
+        radial-gradient(circle at 42% 58%, rgba(193,18,31,0.5) 0 4%, transparent 10%),
+        linear-gradient(90deg, rgba(255,255,255,0.09) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,0.08) 1px, transparent 1px),
+        #101010;
+      background-size: auto, auto, 54px 54px, 54px 54px, auto;
+      box-shadow:
+        0 70px 90px rgba(0,0,0,0.72),
+        0 0 80px rgba(193,18,31,0.22),
+        inset 0 0 90px rgba(0,0,0,0.55);
+    }
+
+    .map-plane::before,
+    .map-plane::after {
+      content: "";
+      position: absolute;
+      inset: -22px;
+      border: 1px solid rgba(193,18,31,0.24);
+      transform: translateZ(-55px);
+    }
+
+    .map-plane::after {
+      inset: -44px;
+      opacity: 0.45;
+      transform: translateZ(-110px);
+    }
+
+    .data-panel {
+      position: absolute;
+      right: 16px;
+      top: 34px;
+      width: 300px;
+      padding: 24px;
+      min-height: 360px;
+      border: 1px solid rgba(255,255,255,0.22);
+      background: linear-gradient(145deg, rgba(30,30,30,0.92), rgba(9,9,9,0.78));
       backdrop-filter: blur(14px);
       box-shadow:
-        0 42px 90px rgba(0, 0, 0, 0.58),
-        0 0 80px rgba(193,18,31,0.12),
+        0 45px 90px rgba(0,0,0,0.68),
+        0 0 90px rgba(193,18,31,0.22),
         inset 0 1px 0 rgba(255,255,255,0.12);
-      padding: 28px;
-      min-height: 410px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transform: rotateY(-9deg) rotateX(4deg) translateZ(88px);
-      transform-style: preserve-3d;
-      animation: panelFloat 7.5s ease-in-out infinite;
+      transform: translateZ(150px) rotateY(-8deg);
     }
 
-    .panel::before {
+    .data-panel::before {
       content: "";
       position: absolute;
       inset: 14px -14px -14px 14px;
-      border: 1px solid rgba(193,18,31,0.24);
-      transform: translateZ(-40px);
+      border: 1px solid rgba(193,18,31,0.28);
+      transform: translateZ(-70px);
       z-index: -1;
     }
 
     .panel-label {
-      color: #9d9d9d;
+      color: #aaa;
       text-transform: uppercase;
       font-size: 0.72rem;
       letter-spacing: 0.18em;
@@ -339,14 +280,13 @@
     .stat {
       padding: 18px 0;
       border-top: 1px solid var(--line);
-      transform: translateZ(28px);
     }
 
     .stat:first-of-type { border-top: 0; padding-top: 0; }
 
     .stat-number {
-      font-family: "Space Grotesk", "Inter", sans-serif;
-      font-size: 2.14rem;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 2rem;
       line-height: 1;
       font-weight: 700;
     }
@@ -358,25 +298,61 @@
       line-height: 1.4;
     }
 
-    .scroll-note {
-      margin-top: 28px;
-      color: #aaa;
-      font-size: 0.86rem;
+    .floating-card {
+      position: absolute;
+      left: 24px;
+      bottom: 38px;
+      width: 230px;
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(12,12,12,0.78);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 34px 70px rgba(0,0,0,0.62), 0 0 52px rgba(193,18,31,0.18);
+      transform: translateZ(190px) rotateY(12deg);
     }
+
+    .floating-card strong {
+      display: block;
+      color: var(--red);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 0.72rem;
+    }
+
+    .floating-card p {
+      margin: 0;
+      color: #d6d6d6;
+      line-height: 1.45;
+      font-size: 0.9rem;
+    }
+
+    .pin {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 0 10px rgba(193,18,31,0.14), 0 0 40px rgba(193,18,31,0.8);
+      transform: translateZ(230px);
+      animation: pinPulse 2.8s ease-in-out infinite;
+    }
+
+    .pin.one { top: 220px; left: 250px; }
+    .pin.two { top: 310px; left: 350px; animation-delay: 0.7s; }
+    .pin.three { top: 190px; left: 430px; animation-delay: 1.2s; }
 
     .section {
       padding: 92px 30px;
       border-top: 1px solid var(--line);
-      background:
-        radial-gradient(circle at 14% 10%, rgba(193,18,31,0.11), transparent 24%),
-        #0b0b0b;
+      background: radial-gradient(circle at 14% 10%, rgba(193,18,31,0.11), transparent 24%), #0b0b0b;
       perspective: 1200px;
     }
 
     .section-inner { max-width: 1120px; margin: 0 auto; }
 
     .section h2 {
-      font-family: "Space Grotesk", "Inter", sans-serif;
+      font-family: "Space Grotesk", sans-serif;
       font-size: clamp(2.1rem, 4vw, 3.8rem);
       letter-spacing: -0.055em;
       margin: 0 0 18px;
@@ -406,29 +382,15 @@
       padding: 26px;
       min-height: 205px;
       box-shadow: 0 26px 60px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.08);
-      transform: rotateX(0deg) translateZ(0);
       transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
       overflow: hidden;
     }
 
-    .card::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 84% 16%, rgba(193,18,31,0.18), transparent 34%);
-      opacity: 0;
-      transition: opacity 0.28s ease;
-    }
-
     .card:hover {
-      transform: translateY(-10px) rotateX(5deg) translateZ(38px);
-      border-color: rgba(193, 18, 31, 0.68);
+      transform: translateY(-10px) rotateX(5deg);
+      border-color: rgba(193,18,31,0.68);
       box-shadow: 0 40px 80px rgba(0,0,0,0.55), 0 0 55px rgba(193,18,31,0.15);
     }
-
-    .card:hover::after { opacity: 1; }
-
-    .card > * { position: relative; z-index: 1; }
 
     .card-number {
       color: var(--red);
@@ -455,58 +417,22 @@
       background: #0b0b0b;
     }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes pulseMap {
-      0%, 100% { opacity: 0.76; transform: scale(1); }
-      50% { opacity: 0.96; transform: scale(1.018); }
-    }
-
-    @keyframes mapFloat {
-      0%, 100% { transform: rotateX(58deg) rotateZ(-13deg) translateZ(-60px) translateY(0); }
-      50% { transform: rotateX(58deg) rotateZ(-13deg) translateZ(-32px) translateY(-14px); }
-    }
-
-    @keyframes panelFloat {
-      0%, 100% { transform: rotateY(-9deg) rotateX(4deg) translateZ(88px) translateY(0); }
-      50% { transform: rotateY(-7deg) rotateX(5deg) translateZ(108px) translateY(-10px); }
+    @keyframes sceneFloat {
+      0%, 100% { transform: rotateY(-18deg) rotateX(10deg) translateY(0); }
+      50% { transform: rotateY(-13deg) rotateX(12deg) translateY(-18px); }
     }
 
     @keyframes pinPulse {
-      0%, 100% { transform: translateZ(42px) scale(1); opacity: 0.74; }
-      50% { transform: translateZ(72px) scale(1.28); opacity: 1; }
-    }
-
-    @keyframes grainShift {
-      0% { transform: translate(0, 0); }
-      50% { transform: translate(-1%, 1%); }
-      100% { transform: translate(1%, -1%); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      * { animation: none !important; scroll-behavior: auto !important; }
+      0%, 100% { opacity: 0.7; transform: translateZ(230px) scale(1); }
+      50% { opacity: 1; transform: translateZ(260px) scale(1.35); }
     }
 
     @media (max-width: 980px) {
-      .hero-content { grid-template-columns: 1fr; }
-      .hero-map-wrap {
-        right: -18vw;
-        top: 8vh;
-        width: 82vw;
-        height: 52vh;
-        opacity: 0.5;
-      }
-      .panel {
-        min-height: auto;
-        transform: none;
-        animation: none;
-      }
-      .cards { grid-template-columns: 1fr; }
       .navbar { position: static; }
-      .hero { padding-top: 70px; }
+      .hero-content { grid-template-columns: 1fr; }
+      .visual-3d { height: 460px; transform: rotateY(-10deg) rotateX(8deg); opacity: 0.92; }
+      .data-panel { width: 270px; right: 0; }
+      .cards { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -526,15 +452,6 @@
 
   <main>
     <section class="hero">
-      <div class="hero-map-wrap" aria-hidden="true">
-        <div id="heroMap" class="hero-map"></div>
-        <div class="heat-overlay"></div>
-        <span class="floating-pin pin-a"></span>
-        <span class="floating-pin pin-b"></span>
-        <span class="floating-pin pin-c"></span>
-      </div>
-      <div class="grain" aria-hidden="true"></div>
-
       <div class="hero-content">
         <div class="hero-copy">
           <div class="eyebrow"><span>Personal research project</span> · Fieldwork · UCDP-style data</div>
@@ -551,8 +468,12 @@
           <div class="scroll-note">A personal project connecting thesis fieldwork, conflict-data methods and geospatial analysis.</div>
         </div>
 
-        <aside class="panel" aria-label="Project summary">
-          <div>
+        <div class="visual-3d" aria-label="3D research dashboard visual">
+          <div class="map-plane"></div>
+          <span class="pin one"></span>
+          <span class="pin two"></span>
+          <span class="pin three"></span>
+          <div class="data-panel">
             <div class="panel-label">Project snapshot</div>
             <div class="stat">
               <div class="stat-number">Fieldwork</div>
@@ -564,10 +485,14 @@
             </div>
             <div class="stat">
               <div class="stat-number">Original data</div>
-              <div class="stat-text">A personal dataset focused on Rosario as a core empirical case in my research field.</div>
+              <div class="stat-text">A personal dataset focused on Rosario as a core empirical case.</div>
             </div>
           </div>
-        </aside>
+          <div class="floating-card">
+            <strong>Rosario urban grid</strong>
+            <p>Spatial layers, event points and criminal governance patterns translated into an exploratory interface.</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -584,13 +509,11 @@
             <h3>Fieldwork-informed research</h3>
             <p>The project builds on thesis research conducted in Argentina and on contextual knowledge of Rosario's criminal dynamics.</p>
           </article>
-
           <article class="card">
             <div class="card-number">02</div>
             <h3>Original event dataset</h3>
             <p>Events are organised through date, location, dyad, type of violence, fatalities, civilian deaths and source references.</p>
           </article>
-
           <article class="card">
             <div class="card-number">03</div>
             <h3>Criminal governance lens</h3>
@@ -601,29 +524,6 @@
     </section>
   </main>
 
-  <footer>
-    Mapping Criminal Violence in Rosario · Personal research portfolio project
-  </footer>
-
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script>
-    var heroMap = L.map("heroMap", {
-      center: [-32.948, -60.655],
-      zoom: 13,
-      zoomControl: false,
-      attributionControl: false,
-      dragging: false,
-      scrollWheelZoom: false,
-      doubleClickZoom: false,
-      boxZoom: false,
-      keyboard: false,
-      tap: false,
-      touchZoom: false
-    });
-
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19
-    }).addTo(heroMap);
-  </script>
+  <footer>Mapping Criminal Violence in Rosario · Personal research portfolio project</footer>
 </body>
 </html>
