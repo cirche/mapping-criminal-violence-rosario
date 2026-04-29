@@ -5,525 +5,99 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mapping Criminal Violence in Rosario</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 
   <style>
-    :root {
-      --black: #080808;
-      --paper: #f2f0ea;
-      --muted: #8b8b8b;
-      --white: #ffffff;
-      --red: #c1121f;
-      --red-dark: #8f0d17;
-      --line: rgba(255,255,255,0.14);
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-
     body {
       margin: 0;
-      font-family: "Inter", Arial, sans-serif;
+      font-family: Inter, sans-serif;
       background: #080808;
-      color: var(--white);
-      overflow-x: hidden;
+      color: #fff;
     }
 
     .navbar {
       position: fixed;
       top: 0;
       width: 100%;
-      z-index: 1000;
       display: flex;
       justify-content: center;
-      padding: 16px 32px;
-      background: rgba(8,8,8,0.76);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--line);
+      padding: 16px;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(10px);
     }
 
     .nav-links {
-      list-style: none;
       display: flex;
-      gap: 26px;
-      margin: 0;
+      gap: 24px;
+      list-style: none;
       padding: 0;
-      flex-wrap: wrap;
-      justify-content: center;
+      margin: 0;
     }
 
-    .nav-links a {
-      color: #e0e0e0;
-      text-decoration: none;
-      font-size: 0.84rem;
-      transition: color 0.2s ease;
-    }
-
-    .nav-links a:hover { color: var(--red); }
+    .nav-links a { color: #ccc; text-decoration: none; }
+    .nav-links a:hover { color: #c1121f; }
 
     .hero {
-      min-height: 100vh;
-      padding: 118px 30px 72px;
-      position: relative;
-      overflow: hidden;
-      display: grid;
-      place-items: center;
-      background:
-        radial-gradient(circle at 72% 32%, rgba(193,18,31,0.34), transparent 28%),
-        radial-gradient(circle at 12% 82%, rgba(255,255,255,0.07), transparent 28%),
-        #080808;
-      perspective: 1200px;
-    }
-
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(255,255,255,0.08) 1px, transparent 1px);
-      background-size: 95px 95px;
-      transform: rotateX(67deg) translateY(22vh) scale(1.5);
-      transform-origin: center bottom;
-      opacity: 0.36;
-      z-index: 0;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: 4;
-      pointer-events: none;
-      background:
-        linear-gradient(90deg, rgba(8,8,8,0.96) 0%, rgba(8,8,8,0.86) 34%, rgba(8,8,8,0.28) 67%, rgba(8,8,8,0.72) 100%),
-        linear-gradient(0deg, rgba(8,8,8,1) 0%, transparent 32%, rgba(8,8,8,0.32) 100%);
-    }
-
-    .hero-content {
-      width: 100%;
-      max-width: 1180px;
-      position: relative;
-      z-index: 8;
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 48px;
+      height: 100vh;
+      display: flex;
       align-items: center;
-      transform-style: preserve-3d;
+      justify-content: center;
+      padding: 120px 40px;
+      background: radial-gradient(circle at 70% 40%, rgba(193,18,31,0.2), transparent 40%), #080808;
     }
-
-    .hero-copy {
-      transform: translateZ(120px);
-      text-shadow: 0 30px 60px rgba(0,0,0,0.7);
-    }
-
-    .eyebrow {
-      color: var(--paper);
-      text-transform: uppercase;
-      letter-spacing: 0.24em;
-      font-size: 0.72rem;
-      font-weight: 800;
-      margin-bottom: 20px;
-    }
-
-    .eyebrow span { color: var(--red); }
 
     h1 {
-      font-family: "Space Grotesk", "Inter", sans-serif;
-      font-size: clamp(3.4rem, 8vw, 7.9rem);
-      line-height: 0.84;
-      margin: 0 0 26px;
-      letter-spacing: -0.08em;
+      font-family: "Space Grotesk";
+      font-size: 5rem;
+      margin: 0;
       text-transform: uppercase;
-      max-width: 880px;
     }
 
     .title-accent {
+      -webkit-text-stroke: 1px white;
       color: transparent;
-      -webkit-text-stroke: 1.2px rgba(255,255,255,0.88);
     }
 
-    .subtitle {
-      font-size: clamp(1.02rem, 1.7vw, 1.24rem);
-      line-height: 1.62;
-      max-width: 760px;
-      color: #e0e0e0;
-      margin: 0;
-    }
+    .subtitle { color: #ccc; margin-top: 20px; }
 
-    .research-line {
-      margin-top: 22px;
-      color: #f2f0ea;
-      font-size: 0.82rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      font-weight: 800;
-    }
-
-    .research-line span { color: var(--red); }
-
-    .cta-row {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      margin-top: 34px;
-    }
+    .cta-row { margin-top: 30px; display: flex; gap: 12px; }
 
     .btn {
-      padding: 13px 22px;
+      padding: 12px 20px;
       border-radius: 999px;
       text-decoration: none;
-      font-weight: 800;
-      font-size: 0.9rem;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease;
     }
 
-    .btn-primary {
-      background: linear-gradient(180deg, #d51a28, #8f0d17);
-      color: var(--white);
-      box-shadow: 0 18px 38px rgba(193,18,31,0.38), inset 0 1px 0 rgba(255,255,255,0.25);
-    }
+    .btn-primary { background: #c1121f; color: white; }
+    .btn-secondary { border: 1px solid #444; color: white; }
 
-    .btn-secondary {
-      border: 1px solid rgba(255,255,255,0.24);
-      color: var(--white);
-      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.035));
-      box-shadow: 0 14px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.12);
-    }
-
-    .btn:hover { transform: translateY(-4px); }
-
-    .scroll-note {
-      margin-top: 28px;
-      color: #aaa;
-      font-size: 0.86rem;
-    }
-
-    .visual-3d {
-      position: relative;
-      height: 560px;
-      transform-style: preserve-3d;
-      transform: rotateY(-18deg) rotateX(10deg);
-      animation: sceneFloat 8s ease-in-out infinite;
-    }
-
-    .map-plane {
-      position: absolute;
-      inset: 82px 10px 54px 10px;
-      transform: rotateX(62deg) rotateZ(-10deg) translateZ(-120px);
-      transform-origin: center;
-      border: 1px solid rgba(255,255,255,0.22);
-      background:
-        radial-gradient(circle at 65% 45%, rgba(193,18,31,0.72) 0 5%, rgba(193,18,31,0.24) 6% 16%, transparent 18%),
-        radial-gradient(circle at 42% 58%, rgba(193,18,31,0.5) 0 4%, transparent 10%),
-        linear-gradient(90deg, rgba(255,255,255,0.09) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(255,255,255,0.08) 1px, transparent 1px),
-        #101010;
-      background-size: auto, auto, 54px 54px, 54px 54px, auto;
-      box-shadow:
-        0 70px 90px rgba(0,0,0,0.72),
-        0 0 80px rgba(193,18,31,0.22),
-        inset 0 0 90px rgba(0,0,0,0.55);
-    }
-
-    .map-plane::before,
-    .map-plane::after {
-      content: "";
-      position: absolute;
-      inset: -22px;
-      border: 1px solid rgba(193,18,31,0.24);
-      transform: translateZ(-55px);
-    }
-
-    .map-plane::after {
-      inset: -44px;
-      opacity: 0.45;
-      transform: translateZ(-110px);
-    }
-
-    .data-panel {
-      position: absolute;
-      right: 16px;
-      top: 34px;
-      width: 300px;
-      padding: 24px;
-      min-height: 360px;
-      border: 1px solid rgba(255,255,255,0.22);
-      background: linear-gradient(145deg, rgba(30,30,30,0.92), rgba(9,9,9,0.78));
-      backdrop-filter: blur(14px);
-      box-shadow:
-        0 45px 90px rgba(0,0,0,0.68),
-        0 0 90px rgba(193,18,31,0.22),
-        inset 0 1px 0 rgba(255,255,255,0.12);
-      transform: translateZ(150px) rotateY(-8deg);
-    }
-
-    .data-panel::before {
-      content: "";
-      position: absolute;
-      inset: 14px -14px -14px 14px;
-      border: 1px solid rgba(193,18,31,0.28);
-      transform: translateZ(-70px);
-      z-index: -1;
-    }
-
-    .panel-label {
-      color: #aaa;
-      text-transform: uppercase;
-      font-size: 0.72rem;
-      letter-spacing: 0.18em;
-      margin-bottom: 18px;
-    }
-
-    .stat {
-      padding: 18px 0;
-      border-top: 1px solid var(--line);
-    }
-
-    .stat:first-of-type { border-top: 0; padding-top: 0; }
-
-    .stat-number {
-      font-family: "Space Grotesk", sans-serif;
-      font-size: 2rem;
-      line-height: 1;
-      font-weight: 700;
-    }
-
-    .stat-text {
-      margin-top: 7px;
-      color: #d1d1d1;
-      font-size: 0.92rem;
-      line-height: 1.4;
-    }
-
-    .floating-card {
-      position: absolute;
-      left: 24px;
-      bottom: 38px;
-      width: 230px;
-      padding: 18px;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(12,12,12,0.78);
-      backdrop-filter: blur(12px);
-      box-shadow: 0 34px 70px rgba(0,0,0,0.62), 0 0 52px rgba(193,18,31,0.18);
-      transform: translateZ(190px) rotateY(12deg);
-    }
-
-    .floating-card strong {
-      display: block;
-      color: var(--red);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      font-size: 0.72rem;
-    }
-
-    .floating-card p {
-      margin: 0;
-      color: #d6d6d6;
-      line-height: 1.45;
-      font-size: 0.9rem;
-    }
-
-    .pin {
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: var(--red);
-      box-shadow: 0 0 0 10px rgba(193,18,31,0.14), 0 0 40px rgba(193,18,31,0.8);
-      transform: translateZ(230px);
-      animation: pinPulse 2.8s ease-in-out infinite;
-    }
-
-    .pin.one { top: 220px; left: 250px; }
-    .pin.two { top: 310px; left: 350px; animation-delay: 0.7s; }
-    .pin.three { top: 190px; left: 430px; animation-delay: 1.2s; }
-
-    .section {
-      padding: 92px 30px;
-      border-top: 1px solid var(--line);
-      background: radial-gradient(circle at 14% 10%, rgba(193,18,31,0.11), transparent 24%), #0b0b0b;
-      perspective: 1200px;
-    }
-
-    .section-inner { max-width: 1120px; margin: 0 auto; }
-
-    .section h2 {
-      font-family: "Space Grotesk", sans-serif;
-      font-size: clamp(2.1rem, 4vw, 3.8rem);
-      letter-spacing: -0.055em;
-      margin: 0 0 18px;
-      text-transform: uppercase;
-    }
-
-    .section-text {
-      color: #d4d4d4;
-      line-height: 1.7;
-      max-width: 850px;
-      font-size: 1.05rem;
-      margin: 0;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 22px;
-      margin-top: 42px;
-      transform-style: preserve-3d;
-    }
-
-    .card {
-      position: relative;
-      border: 1px solid rgba(255,255,255,0.16);
-      background: linear-gradient(145deg, rgba(27,27,27,0.92), rgba(10,10,10,0.94));
-      padding: 26px;
-      min-height: 205px;
-      box-shadow: 0 26px 60px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.08);
-      transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
-      overflow: hidden;
-    }
-
-    .card:hover {
-      transform: translateY(-10px) rotateX(5deg);
-      border-color: rgba(193,18,31,0.68);
-      box-shadow: 0 40px 80px rgba(0,0,0,0.55), 0 0 55px rgba(193,18,31,0.15);
-    }
-
-    .card-number {
-      color: var(--red);
-      font-size: 0.82rem;
-      font-weight: 800;
-      margin-bottom: 18px;
-    }
-
-    .card h3 { margin: 0 0 12px; font-size: 1.18rem; }
-
-    .card p {
-      margin: 0;
-      color: #bfbfbf;
-      line-height: 1.55;
-      font-size: 0.96rem;
-    }
-
-    footer {
-      border-top: 1px solid var(--line);
-      padding: 28px;
-      color: var(--muted);
-      text-align: center;
-      font-size: 0.88rem;
-      background: #0b0b0b;
-    }
-
-    @keyframes sceneFloat {
-      0%, 100% { transform: rotateY(-18deg) rotateX(10deg) translateY(0); }
-      50% { transform: rotateY(-13deg) rotateX(12deg) translateY(-18px); }
-    }
-
-    @keyframes pinPulse {
-      0%, 100% { opacity: 0.7; transform: translateZ(230px) scale(1); }
-      50% { opacity: 1; transform: translateZ(260px) scale(1.35); }
-    }
-
-    @media (max-width: 980px) {
-      .navbar { position: static; }
-      .hero-content { grid-template-columns: 1fr; }
-      .visual-3d { height: 460px; transform: rotateY(-10deg) rotateX(8deg); opacity: 0.92; }
-      .data-panel { width: 270px; right: 0; }
-      .cards { grid-template-columns: 1fr; }
-    }
   </style>
 </head>
 
 <body>
-  <nav class="navbar">
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="map.html">Interactive Map</a></li>
-      <li><a href="data.html">Data</a></li>
-      <li><a href="methodology.html">Methodology</a></li>
-      <li><a href="rosario.html">Rosario Analysis</a></li>
-      <li><a href="thesis.html">Thesis</a></li>
-      <li><a href="about.html">Research Profile</a></li>
-    </ul>
-  </nav>
 
-  <main>
-    <section class="hero">
-      <div class="hero-content">
-        <div class="hero-copy">
-          <div class="eyebrow"><span>Personal research project</span> · Fieldwork · UCDP-style data</div>
-          <h1>Mapping Criminal <span class="title-accent">Violence</span> in Rosario</h1>
-          <p class="subtitle">
-            A fieldwork-informed research portfolio on organised crime, urban violence and criminal governance in Rosario, Argentina, built around an original event-based dataset developed after my experience with the Uppsala Conflict Data Program.
-          </p>
-          <div class="research-line"><span>Master’s thesis</span> · Field research in Argentina · UCDP Research Assistant</div>
-          <div class="cta-row">
-            <a href="map.html" class="btn btn-primary">Explore the map</a>
-            <a href="thesis.html" class="btn btn-secondary">Read thesis</a>
-            <a href="about.html" class="btn btn-secondary">Research profile</a>
-          </div>
-          <div class="scroll-note">A personal project connecting thesis fieldwork, conflict-data methods and geospatial analysis.</div>
-        </div>
+<nav class="navbar">
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="map.html">Interactive Map</a></li>
+    <li><a href="data.html">Data</a></li>
+    <li><a href="methodology.html">Methodology</a></li>
+    <li><a href="rosario.html">Rosario Analysis</a></li>
+    <li><a href="thesis.html">Thesis</a></li>
+    <li><a href="about.html">Research Profile</a></li>
+  </ul>
+</nav>
 
-        <div class="visual-3d" aria-label="3D research dashboard visual">
-          <div class="map-plane"></div>
-          <span class="pin one"></span>
-          <span class="pin two"></span>
-          <span class="pin three"></span>
-          <div class="data-panel">
-            <div class="panel-label">Project snapshot</div>
-            <div class="stat">
-              <div class="stat-number">Fieldwork</div>
-              <div class="stat-text">Grounded in thesis research conducted in Argentina on organised crime and urban violence.</div>
-            </div>
-            <div class="stat">
-              <div class="stat-number">UCDP-style</div>
-              <div class="stat-text">Event-based coding adapted to criminal violence, civilian targeting and urban governance dynamics.</div>
-            </div>
-            <div class="stat">
-              <div class="stat-number">Original data</div>
-              <div class="stat-text">A personal dataset focused on Rosario as a core empirical case.</div>
-            </div>
-          </div>
-          <div class="floating-card">
-            <strong>Rosario urban grid</strong>
-            <p>Spatial layers, event points and criminal governance patterns translated into an exploratory interface.</p>
-          </div>
-        </div>
-      </div>
-    </section>
+<section class="hero">
+  <div>
+    <h1>Mapping Criminal <span class="title-accent">Violence</span></h1>
+    <p class="subtitle">Fieldwork · UCDP · Original dataset</p>
+    <div class="cta-row">
+      <a href="map.html" class="btn btn-primary">Explore map</a>
+      <a href="thesis.html" class="btn btn-secondary">Thesis</a>
+    </div>
+  </div>
+</section>
 
-    <section class="section">
-      <div class="section-inner">
-        <h2>From fieldwork to original event data.</h2>
-        <p class="section-text">
-          This project translates my research on criminal violence in Argentina into a public-facing visual interface. It connects qualitative fieldwork, UCDP-style event coding and geospatial exploration to analyse how violence, territory and criminal governance interact in Rosario.
-        </p>
-
-        <div class="cards">
-          <article class="card">
-            <div class="card-number">01</div>
-            <h3>Fieldwork-informed research</h3>
-            <p>The project builds on thesis research conducted in Argentina and on contextual knowledge of Rosario's criminal dynamics.</p>
-          </article>
-          <article class="card">
-            <div class="card-number">02</div>
-            <h3>Original event dataset</h3>
-            <p>Events are organised through date, location, dyad, type of violence, fatalities, civilian deaths and source references.</p>
-          </article>
-          <article class="card">
-            <div class="card-number">03</div>
-            <h3>Criminal governance lens</h3>
-            <p>The project uses spatial visualisation to support interpretation of territorial control, civilian targeting and crimilegal orders.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>Mapping Criminal Violence in Rosario · Personal research portfolio project</footer>
 </body>
 </html>
