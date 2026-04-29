@@ -52,22 +52,40 @@
   </div>
 </section>
 
-<section class="section">
-  <div class="section-inner">
-    <h2>Interactive map preview.</h2>
-    <p class="section-text">
-      This project is built around an original georeferenced dataset of criminal violence in Rosario. The interactive map allows exploration of spatial patterns, clusters and dynamics of urban violence.
-    </p>
+<!-- MINI MAP STRIP (clean, blurred, cinematic) -->
+<section class="section" style="padding-top:0;">
+  <div class="section-inner" style="max-width:1400px;">
 
-    <div style="margin-top:30px; border:1px solid rgba(255,255,255,0.15); box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div style="position:relative; overflow:hidden; border-top:1px solid rgba(255,255,255,0.1);">
+
       <iframe 
         src="map.html" 
-        style="width:100%; height:420px; border:0; filter: grayscale(100%) contrast(1.1) brightness(0.9); opacity:0.85; pointer-events:none;">
+        style="
+          width:100%;
+          height:360px;
+          border:0;
+          filter: blur(2px) grayscale(100%) contrast(1.05);
+          transform: scale(1.05);
+          pointer-events:none;
+          opacity:0.8;
+        ">
       </iframe>
-    </div>
 
-    <div class="cta-row" style="margin-top:20px;">
-      <a href="map.html" class="btn-primary">Open full map</a>
+      <div style="
+        position:absolute;
+        inset:0;
+        background:linear-gradient(to bottom, rgba(6,6,6,0.5), rgba(6,6,6,0.9));
+      "></div>
+
+      <div style="
+        position:absolute;
+        bottom:28px;
+        left:50%;
+        transform:translateX(-50%);
+      ">
+        <a href="map.html" class="btn-primary">Open interactive map</a>
+      </div>
+
     </div>
 
   </div>
