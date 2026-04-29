@@ -14,7 +14,6 @@ body {
   color: var(--text);
 }
 
-/* NAVBAR MINIMAL */
 .navbar {
   position: sticky;
   top: 0;
@@ -47,7 +46,13 @@ body {
   color: var(--red);
 }
 
-/* TITLES → MATCH HOME STYLE (SLIGHTLY SMALLER) */
+/* FIX ALIGNMENT */
+.page-hero-inner,
+.section-inner {
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
 .page-hero h1 {
   font-family: "Space Grotesk", sans-serif;
   font-weight: 700;
