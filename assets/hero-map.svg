@@ -1,84 +1,60 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
   <defs>
-    <filter id="grain">
-      <feTurbulence type="fractalNoise" baseFrequency="0.78" numOctaves="4" stitchTiles="stitch"/>
-      <feColorMatrix type="saturate" values="0"/>
-      <feComponentTransfer><feFuncA type="table" tableValues="0 0.22"/></feComponentTransfer>
-    </filter>
-    <filter id="softGlow">
-      <feGaussianBlur stdDeviation="1.4" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-    <linearGradient id="edgeFade" x1="0" x2="1">
-      <stop offset="0" stop-color="#000" stop-opacity="0.1"/>
-      <stop offset="0.58" stop-color="#000" stop-opacity="0"/>
-      <stop offset="1" stop-color="#000" stop-opacity="0.92"/>
-    </linearGradient>
-    <radialGradient id="redWash" cx="70%" cy="55%" r="42%">
-      <stop offset="0" stop-color="#c1121f" stop-opacity="0.42"/>
-      <stop offset="0.42" stop-color="#c1121f" stop-opacity="0.22"/>
-      <stop offset="1" stop-color="#c1121f" stop-opacity="0"/>
-    </radialGradient>
+    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="3"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 0.18"/></feComponentTransfer></filter>
+    <filter id="glow"><feGaussianBlur stdDeviation="1.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <linearGradient id="leftFade" x1="0" x2="1"><stop offset="0" stop-color="#000" stop-opacity="0.18"/><stop offset="0.45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.72"/></linearGradient>
+    <radialGradient id="redCore" cx="69%" cy="53%" r="36%"><stop offset="0" stop-color="#c1121f" stop-opacity="0.46"/><stop offset="0.45" stop-color="#c1121f" stop-opacity="0.24"/><stop offset="1" stop-color="#c1121f" stop-opacity="0"/></radialGradient>
   </defs>
 
   <rect width="1600" height="900" fill="#020202"/>
-  <rect width="1600" height="900" filter="url(#grain)" opacity="0.75"/>
+  <rect width="1600" height="900" filter="url(#grain)" opacity="0.9"/>
 
-  <!-- black satellite texture -->
-  <g opacity="0.22" fill="#fff">
-    <path d="M20 40 C140 90 240 15 330 90 C440 175 565 110 690 165 C825 225 905 170 1030 235 C1160 305 1270 245 1390 310 C1480 360 1535 340 1600 370 L1600 0 L20 0 Z" opacity="0.08"/>
-    <path d="M0 760 C150 720 250 790 380 725 C520 655 640 725 790 670 C930 620 1030 690 1160 640 C1340 570 1470 620 1600 565 L1600 900 L0 900 Z" opacity="0.10"/>
-  </g>
+  <!-- Rosario: compact orthogonal urban grid -->
+  <g transform="translate(40 -35) rotate(-1.6 760 450)" fill="none" stroke="#ffffff" stroke-linecap="square" filter="url(#glow)">
+    <g stroke-width="1.25" opacity="0.84">
+      <path d="M0 80 H1180 M0 112 H1198 M0 144 H1216 M0 176 H1236 M0 208 H1250 M0 240 H1268 M0 272 H1280 M0 304 H1292 M0 336 H1308 M0 368 H1320 M0 400 H1332 M0 432 H1340 M0 464 H1348 M0 496 H1355 M0 528 H1360 M0 560 H1366 M0 592 H1370 M0 624 H1373 M0 656 H1374 M0 688 H1375 M0 720 H1376 M0 752 H1376 M0 784 H1376 M0 816 H1376"/>
+      <path d="M70 20 V850 M110 20 V850 M150 20 V850 M190 20 V850 M230 20 V850 M270 20 V850 M310 20 V850 M350 20 V850 M390 20 V850 M430 20 V850 M470 20 V850 M510 20 V850 M550 20 V850 M590 20 V850 M630 20 V850 M670 20 V850 M710 20 V850 M750 20 V850 M790 20 V850 M830 20 V850 M870 20 V850 M910 20 V850 M950 20 V850 M990 20 V850 M1030 20 V850 M1070 20 V850 M1110 20 V850 M1150 20 V850 M1190 20 V850 M1230 20 V850 M1270 20 V850 M1310 20 V850"/>
+    </g>
 
-  <!-- white city grid, denser and more map-like -->
-  <g stroke="#f2f2ef" stroke-width="1.05" fill="none" opacity="0.72" filter="url(#softGlow)">
-    <g transform="translate(40 -5) rotate(-1.2 720 420)">
-      <path d="M40 60 H1140 M35 92 H1168 M30 124 H1194 M25 156 H1220 M20 188 H1242 M16 220 H1260 M14 252 H1280 M12 284 H1300 M10 316 H1320 M8 348 H1340 M6 380 H1360 M4 412 H1380 M2 444 H1395 M0 476 H1410 M0 508 H1420 M0 540 H1430 M0 572 H1440 M0 604 H1450 M0 636 H1460 M0 668 H1470 M0 700 H1480 M0 732 H1490 M0 764 H1500 M0 796 H1510"/>
-      <path d="M72 40 V820 M112 36 V820 M152 32 V820 M192 28 V820 M232 24 V820 M272 20 V820 M312 18 V820 M352 16 V820 M392 14 V820 M432 12 V820 M472 10 V820 M512 8 V820 M552 6 V820 M592 4 V820 M632 2 V820 M672 0 V820 M712 0 V820 M752 0 V820 M792 0 V820 M832 0 V820 M872 0 V820 M912 0 V820 M952 0 V820 M992 0 V820 M1032 0 V820 M1072 0 V820 M1112 0 V820 M1152 0 V820 M1192 0 V820 M1232 0 V820 M1272 0 V820 M1312 0 V820 M1352 0 V820"/>
+    <!-- irregular western / northern edges -->
+    <g stroke-width="0.8" opacity="0.38">
+      <path d="M0 60 L180 95 L260 40 L390 75 L510 42 L650 70 L800 38 L980 65 L1150 30"/>
+      <path d="M15 835 L190 790 L330 822 L510 770 L700 805 L875 748 L1040 778 L1210 720"/>
+      <path d="M0 250 L120 280 L250 258 L390 300 L520 282 L700 330 L850 305 L1040 350 L1230 330"/>
+      <path d="M0 610 C185 570 345 545 520 565 S805 670 995 690 S1210 620 1380 630" stroke-width="3.6" opacity="0.45"/>
+      <path d="M210 850 C330 700 475 610 610 430 S750 180 900 0" stroke-width="4.2" opacity="0.5"/>
+      <path d="M0 385 C260 360 460 380 650 330 S930 240 1120 255 S1300 310 1450 292" stroke-width="5.2" opacity="0.58"/>
     </g>
   </g>
 
-  <!-- broken secondary streets -->
-  <g stroke="#ffffff" stroke-width="0.75" fill="none" opacity="0.33">
-    <path d="M95 90 L260 210 L450 235 L620 315 L820 320 L1030 405 L1290 398"/>
-    <path d="M60 230 L240 245 L315 320 L510 370 L690 460 L890 455 L1160 540 L1510 520"/>
-    <path d="M180 770 L250 590 L410 530 L540 430 L760 385 L915 260 L1110 210"/>
-    <path d="M0 640 C180 600 345 560 510 575 S760 680 940 710 S1210 620 1500 625" stroke-width="3.2" opacity="0.42"/>
-    <path d="M0 350 C230 340 410 365 610 320 S860 250 1070 250 S1340 320 1600 290" stroke-width="4" opacity="0.48"/>
-    <path d="M430 900 C515 720 600 560 660 390 S730 165 835 0" stroke-width="4" opacity="0.45"/>
+  <!-- Paraná river / waterfront: the key Rosario identity -->
+  <path d="M1115 -30 C1072 78 1100 160 1188 238 C1280 318 1392 340 1434 457 C1482 592 1388 704 1354 812 C1330 888 1438 925 1620 925 L1620 -30 Z" fill="#000" opacity="0.96"/>
+  <path d="M1118 -5 C1088 90 1116 166 1194 235 C1288 318 1395 346 1422 458 C1452 590 1378 700 1352 807" fill="none" stroke="#ffffff" stroke-width="5" stroke-opacity="0.46" filter="url(#glow)"/>
+  <path d="M1180 30 C1260 95 1350 140 1600 150" fill="none" stroke="#ffffff" stroke-width="2" stroke-opacity="0.18"/>
+  <path d="M1220 780 C1330 760 1445 800 1600 828" fill="none" stroke="#ffffff" stroke-width="2" stroke-opacity="0.16"/>
+
+  <!-- eastern Rosario / violence layer -->
+  <rect width="1600" height="900" fill="url(#redCore)"/>
+  <g transform="translate(690 180) rotate(-1 300 250)" fill="none" stroke="#c1121f" stroke-width="1.2" opacity="0.72">
+    <path d="M0 0 H610 M0 28 H630 M0 56 H648 M0 84 H660 M0 112 H665 M0 140 H667 M0 168 H660 M0 196 H648 M0 224 H632 M0 252 H610 M0 280 H580 M0 308 H545 M0 336 H505 M0 364 H455 M0 392 H395 M0 420 H320"/>
+    <path d="M0 0 V430 M28 0 V448 M56 0 V460 M84 0 V470 M112 0 V476 M140 0 V482 M168 0 V486 M196 0 V490 M224 0 V492 M252 0 V492 M280 0 V488 M308 0 V480 M336 0 V470 M364 0 V456 M392 0 V438 M420 0 V416 M448 0 V390 M476 0 V360 M504 12 V328 M532 26 V292 M560 45 V252 M588 70 V208 M616 98 V160"/>
   </g>
 
-  <!-- red eastern/downtown overlay, grid rather than huge circles -->
-  <rect width="1600" height="900" fill="url(#redWash)"/>
-  <g stroke="#c1121f" stroke-width="1.05" fill="none" opacity="0.62">
-    <g transform="translate(690 190) rotate(1)">
-      <path d="M0 0 H640 M0 24 H650 M0 48 H660 M0 72 H665 M0 96 H670 M0 120 H668 M0 144 H662 M0 168 H656 M0 192 H640 M0 216 H618 M0 240 H596 M0 264 H570 M0 288 H540 M0 312 H500 M0 336 H465 M0 360 H420 M0 384 H375 M0 408 H315"/>
-      <path d="M0 0 V410 M24 0 V428 M48 0 V440 M72 0 V448 M96 0 V454 M120 0 V462 M144 0 V468 M168 0 V472 M192 0 V478 M216 0 V482 M240 0 V484 M264 0 V480 M288 0 V474 M312 0 V468 M336 0 V458 M360 0 V448 M384 0 V434 M408 0 V416 M432 0 V396 M456 0 V372 M480 0 V344 M504 0 V316 M528 10 V286 M552 20 V254 M576 32 V220 M600 48 V184 M624 66 V145"/>
-    </g>
+  <!-- red hotspots, like event-density marks -->
+  <g fill="#c1121f" opacity="0.78" filter="url(#glow)">
+    <circle cx="1008" cy="430" r="56" opacity="0.38"/>
+    <circle cx="1112" cy="535" r="84" opacity="0.30"/>
+    <circle cx="930" cy="585" r="35" opacity="0.48"/>
+    <circle cx="815" cy="470" r="24" opacity="0.52"/>
+    <circle cx="760" cy="625" r="22" opacity="0.46"/>
+    <circle cx="1050" cy="300" r="20" opacity="0.54"/>
+    <circle cx="1228" cy="625" r="26" opacity="0.48"/>
+    <circle cx="1370" cy="745" r="24" opacity="0.42"/>
+    <circle cx="1465" cy="520" r="15" opacity="0.5"/>
+    <circle cx="1180" cy="185" r="13" opacity="0.5"/>
   </g>
 
-  <!-- river/dark waterfront -->
-  <path d="M1115 -20 C1055 105 1125 205 1240 285 C1360 370 1375 505 1320 642 C1270 765 1315 840 1435 920 L1620 920 L1620 -20 Z" fill="#000" opacity="0.76"/>
-  <path d="M1135 0 C1090 108 1145 205 1250 278 C1368 360 1380 500 1330 635 C1285 760 1325 840 1450 900" stroke="#f4f4f0" stroke-opacity="0.35" stroke-width="4" fill="none"/>
-
-  <!-- organic red stains / hotspots: smaller, more scattered -->
-  <g fill="#c1121f" opacity="0.72" filter="url(#softGlow)">
-    <circle cx="945" cy="382" r="44" opacity="0.34"/>
-    <circle cx="1045" cy="520" r="70" opacity="0.28"/>
-    <circle cx="1145" cy="430" r="36" opacity="0.32"/>
-    <circle cx="825" cy="590" r="28" opacity="0.46"/>
-    <circle cx="755" cy="345" r="22" opacity="0.5"/>
-    <circle cx="685" cy="645" r="18" opacity="0.44"/>
-    <circle cx="612" cy="455" r="15" opacity="0.44"/>
-    <circle cx="1260" cy="610" r="22" opacity="0.48"/>
-    <circle cx="1370" cy="760" r="21" opacity="0.45"/>
-    <circle cx="1490" cy="520" r="12" opacity="0.55"/>
-    <circle cx="1215" cy="205" r="12" opacity="0.42"/>
-    <circle cx="970" cy="250" r="10" opacity="0.55"/>
-    <circle cx="880" cy="735" r="13" opacity="0.55"/>
-  </g>
-
-  <!-- vignette -->
-  <rect width="1600" height="900" fill="url(#edgeFade)"/>
-  <rect width="1600" height="900" fill="#000" opacity="0.08"/>
+  <!-- vignette and readability -->
+  <rect width="1600" height="900" fill="url(#leftFade)"/>
+  <rect width="1600" height="900" fill="#000" opacity="0.12"/>
 </svg>
