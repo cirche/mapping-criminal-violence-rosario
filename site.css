@@ -100,6 +100,51 @@ main { min-height: 70vh; }
   overflow: hidden;
 }
 
+.home-hero {
+  isolation: isolate;
+  background: #030303;
+}
+
+.home-hero .hero-map-bg,
+.home-hero .hero-map-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.home-hero .hero-map-bg {
+  z-index: 0;
+  background-image: url("assets/rosario-violence-map.png");
+  background-size: cover;
+  background-position: 96% center;
+  opacity: 0.98;
+  filter: contrast(1.18) saturate(1.08) brightness(1.16);
+  transform: scale(1.01);
+}
+
+.home-hero .hero-map-overlay {
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(3,3,3,0.96) 0%, rgba(3,3,3,0.82) 34%, rgba(3,3,3,0.28) 62%, rgba(3,3,3,0.04) 100%),
+    linear-gradient(180deg, rgba(3,3,3,0.26) 0%, rgba(3,3,3,0.02) 42%, rgba(3,3,3,0.58) 100%),
+    radial-gradient(circle at 76% 44%, rgba(193,18,31,0.16), transparent 31%);
+}
+
+.home-hero::before,
+.home-hero::after {
+  display: none;
+}
+
+.home-hero h1,
+.home-hero .subtitle,
+.home-hero .hero-kicker {
+  text-shadow: 0 18px 50px rgba(0,0,0,0.74);
+}
+
+.home-hero .hero-inner {
+  z-index: 2;
+}
+
 .hero::before {
   content: "";
   position: absolute;
@@ -350,6 +395,16 @@ footer {
   .hero { min-height: 86vh; }
   .hero-inner { margin-left: auto; }
   .hero::before { opacity: 0.18; right: -120px; }
+  .home-hero .hero-map-bg {
+    background-position: 92% center;
+    opacity: 0.94;
+    filter: contrast(1.12) saturate(1.04) brightness(1.05);
+  }
+  .home-hero .hero-map-overlay {
+    background:
+      linear-gradient(90deg, rgba(3,3,3,0.94) 0%, rgba(3,3,3,0.72) 54%, rgba(3,3,3,0.24) 100%),
+      linear-gradient(180deg, rgba(3,3,3,0.28) 0%, rgba(3,3,3,0.08) 46%, rgba(3,3,3,0.78) 100%);
+  }
   .content { width: min(calc(100% - 34px), var(--content-width)); }
 }
 
